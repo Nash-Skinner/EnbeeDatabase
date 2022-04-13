@@ -20,6 +20,11 @@ db.connect(err => {
 const app = express()
 
 // Create Database
+app.get("/", (req, res) => {
+    res.send('Hello World') 
+});
+
+// Create Database
 app.get("/createdb", (req, res) => {
     let sql = "CREATE DATABASE EnbeeDatabase";
     db.query(sql, (err) => {
