@@ -1,5 +1,5 @@
-CREATE DATABASE Enbees;
-USE Enbees;
+CREATE DATABASE EnbeeDatabase;
+USE EnbeeDatabase;
 CREATE TABLE Game(
 	Abbrev varchar(10),			
     Name varchar(10),
