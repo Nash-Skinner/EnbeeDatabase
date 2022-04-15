@@ -1,7 +1,12 @@
+/**
+ * ModeratorFor
+ * 
+ * Primary Key: {gameId, userId}
+ */
 class ModeratorFor {
-    constructor(Abbrev, Username){
-        this.Abbrev = Abbrev;
-        this.Username = Username;
+    constructor(gameId, userId) {
+        this.gameId = gameId;
+        this.userId = userId;
     }
 }
 

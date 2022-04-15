@@ -1,16 +1,19 @@
+/**
+ * Run
+ * 
+ * Primary Key: {runId, gameId, categoryId}
+ */
 class Run {
-    constructor(RunTime, CategoryName, SubcategoryName, SubmittedByUserName, VerifiedByUserName, Placement, DatePlayed, DateVerified, IsObsolete, RunDescription){
-        this.RunTime = RunTime;
-        this.CategoryName = CategoryName;
-        this.SubcategoryName = SubcategoryName;
-        this.SubmittedByUserName = SubmittedByUserName;
-        this.VerifiedByUserName = VerifiedByUserName;
-        this.Placement = Placement;
-        this.DatePlayed = DatePlayed;
-        this.DateVerified = DateVerified;
-        this.IsObsolete = IsObsolete;
-        this.RunDescription = RunDescription;
-    }
+	constructor(runId, gameId, categoryId, runTime, placement, datePlayed, isObsolete, runDescription) {
+		this.runId = runId;
+		this.gameId = gameId;
+		this.categoryId = categoryId;
+		this.runTime = runTime;
+		this.placement = placement;
+		this.datePlayed = datePlayed;
+		this.isObsolete = isObsolete;
+		this.runDescription = runDescription;
+	}
 }
 
 module.exports = Run;

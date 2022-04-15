@@ -31,7 +31,7 @@ function initializeDatabase(config) {
 			if(err) {
 				throw err;
 			}
-		console.log("Reset Database");
+		console.log(`Resetting Database: ${config.database}`);
 		});
 	}
 
@@ -40,7 +40,7 @@ function initializeDatabase(config) {
     	var files_imported = importer.getImported();
     	console.log(`${files_imported.length} SQL file(s) imported.`);
 	}).catch(err => {
-    	console.log("Database Already Initialized")
+    	console.log(`Error Importing SQL: ${err}`);
 	});
 }
 

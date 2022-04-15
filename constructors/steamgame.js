@@ -1,12 +1,17 @@
-class SteamGame{
-    constructor(AppID, Abbrev, Developer, ReleaseDate, Publisher, Rating){
-        this.AppID = AppID;
-        this.Abbrev = Abbrev;
-        this.Developer = Developer;
-        this.ReleaseDate = ReleaseDate;
-        this.Publisher = Publisher;
-        this.Rating = Rating;
-    }
+/**
+ * SteamGame
+ * 
+ * Primary Key: {app_id}
+ */
+class SteamGame {
+	constructor(appId, abbrev, developer, releaseDate, publisher, rating) {
+		this.appId = appId;
+		this.abbrev = abbrev;
+		this.developer = developer;
+		this.releaseDate = releaseDate;
+		this.publisher = publisher;
+		this.rating = rating;
+	}
 }
 
 module.exports = SteamGame;

@@ -1,10 +1,16 @@
-class Game{
-    constructor(Abbrev, Name, Rules, Platform, ReleaseYear){
-        this.Abbrev = Abbrev;
-        this.Name = Name;
-        this.Rules = Rules;
-        this.Platform = Platform;
-        this.ReleaseYear = ReleaseYear;
+/**
+ * Game
+ * 
+ * Primary Key: gameId
+ */
+class Game {
+    constructor(gameId, abbrev, name, platforms, releaseYear, weblink) {
+        this.gameId = gameId;
+		this.abbrev = abbrev;
+		this.name = name;
+		this.platforms = platforms;
+		this.releaseYear = releaseYear;
+		this.weblink = weblink;
     }
 }
 
