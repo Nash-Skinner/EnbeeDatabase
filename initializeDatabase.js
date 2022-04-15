@@ -1,5 +1,5 @@
 /**
- * initializeDatabase.ts
+ * initializeDatabase.js
  * 
  * Handles initialization and startup for the database.
  */
@@ -14,12 +14,7 @@ import mysql from 'mysql';
  */
 function initializeDatabase(config) {
 	const importer = new Importer({host: config.host, user: config.user, password: config.password});
-	
-	const db = mysql.createConnection({
-		host: config.host,
-		user: config.user,
-		password: config.password
-	});
+	const db = mysql.createConnection({host: config.host, user: config.user, password: config.password});
 
 	// Connect to MySql
 	db.connect(err => {
