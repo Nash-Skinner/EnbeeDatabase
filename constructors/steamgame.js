@@ -14,4 +14,4 @@ class SteamGame {
 	}
 }
 
-module.exports = SteamGame;
+export { SteamGame };

@@ -10,4 +10,4 @@ class ModeratorFor {
     }
 }
 
-module.exports = ModeratorFor;
+export { ModeratorFor };

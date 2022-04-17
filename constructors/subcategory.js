@@ -8,4 +8,4 @@ class Subcategory {
     }
 }
 
-module.exports = Subcategory;
+export { Subcategory };

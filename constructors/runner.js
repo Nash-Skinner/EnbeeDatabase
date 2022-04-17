@@ -13,4 +13,4 @@ class Runner {
     }
 }
 
-module.exports = Runner;
+export { Runner };

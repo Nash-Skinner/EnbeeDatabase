@@ -12,4 +12,4 @@
     }
 }
 
-module.exports = PlayedBy;
+export { PlayedBy };

@@ -8,40 +8,47 @@ import Importer from 'mysql-import';
 import mysql from 'mysql';
 
 /**
- * Initializes the database and returns a MySQL Database Connection
+ * Initializes the database from a MySQL Connection
  * 
  * @param config Configuration settings {host, user, password, database, resetDBOnLaunch}
  */
-function initializeDatabase(config) {
-	const importer = new Importer({host: config.host, user: config.user, password: config.password});
-	const db = mysql.createConnection({host: config.host, user: config.user, password: config.password});
+function initializeDatabase(db, config) {
+	const importer = new Importer({ host: config.host, user: config.user, password: config.password });
 
-	// Connect to MySql
-	db.connect(err => {
-    	if(err){
-        	throw err;
-    	}
-    	console.log("MySQL Connected")
-	});
-	
-	// Start with Empty Database (if requested)
-	if(config.resetDBOnLaunch) {
-		let sql = `DROP DATABASE IF EXISTS ${config.database}`;
-		db.query(sql, (err) => {
-			if(err) {
-				throw err;
+	let promise = new Promise((resolve, reject) => {
+		try {
+			db.connect((err) => {
+				if (err) throw err;
+
+				console.log(`Connected as ID: ${db.threadId}`);
+			});
+
+			if (config.resetDBOnLaunch) {
+				let sql = `DROP DATABASE IF EXISTS EnbeeDatabase`;
+				db.query(sql, (err) => {
+					if (err) throw err;
+					console.log(`Dropped database ${config.database}.`);
+				});
 			}
-		console.log(`Resetting Database: ${config.database}`);
-		});
-	}
 
-	// Imports SQL Schema
-	importer.import('./EnbeeSchema.sql').then(() => {
-    	var files_imported = importer.getImported();
-    	console.log(`${files_imported.length} SQL file(s) imported.`);
-	}).catch(err => {
-    	console.log(`Error Importing SQL: ${err}`);
+			importer.import(config.schema).then(() => {
+				var files_imported = importer.getImported();
+				console.log(`${files_imported.length} SQL file(s) imported.`);
+				resolve(db);
+			}).catch(err => {
+				console.log(`Error Importing SQL: ${err}`);
+				resolve(db);
+			});
+
+		}
+		catch (e) {
+			console.log("Error: " + e);
+			reject(e);
+		}
+
 	});
+
+	return promise;
 }
 
 export { initializeDatabase };

@@ -16,4 +16,4 @@ class Run {
 	}
 }
 
-module.exports = Run;
+export { Run };

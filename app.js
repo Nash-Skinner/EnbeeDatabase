@@ -1,12 +1,12 @@
 import express from 'express';
-import config from './config.json' assert { type: "json" };
+import config from './config.json'; //assert{ type: "json" };
 import { initializeDatabase } from './initializeDatabase.js';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import mysql from 'mysql';
 
-const db = initializeDatabase(config);
-const database = mysql.createConnection({host: config.host, user: config.user, password: config.password, database: config.database});
+const db = mysql.createConnection({host: config.host, user: config.user, password: config.password, database: config.database});
+initializeDatabase(db, config);
 const app = express()
 const port = process.env.PORT || 3000;
 
@@ -19,7 +19,7 @@ app
     // Get Game Table
     .get('/api/game', async(req,res) => {
         var sql = "SELECT * FROM game ORDER BY gameId";
-        database.query(sql, (err, result)=>{
+        db.query(sql, (err, result)=>{
             console.log(result)
         })
     })
@@ -30,7 +30,7 @@ app
 
         //await db.query(`            
         const mySQLString = ("INSERT INTO game (gameId, abbrev, name, platforms, releaseYear, weblink) VALUES ('"+ body.gameId +"', '"+ body.abbrev +"', '"+ body.name +"', '"+ body.platforms +"', '"+ body.releaseYear +"', '"+ body.weblink +"')");
-        database.query(mySQLString)
+        db.query(mySQLString)
 
         res.redirect('..');
     })
@@ -41,7 +41,7 @@ app
 
         //await db.query(`            
         const mySQLString = ("INSERT INTO steamgame (appId, srdcGameId, developer, releaseDate, publisher, rating) VALUES ('"+ body.appId +"', '"+ body.srdcGameId +"', '"+ body.developer +"', '"+ body.releaseDate +"', '"+ body.publisher +"', '"+ body.rating +"')");
-        database.query(mySQLString)
+        db.query(mySQLString)
 
         res.redirect('..');
     })
@@ -52,7 +52,7 @@ app
 
         //await db.query(`            
         const mySQLString = ("INSERT INTO category (gameId, categoryId, categoryName, rules) VALUES ('"+ body.gameId +"', '"+ body.categoryId +"', '"+ body.categoryName +"', '"+ body.rules +"')");
-        database.query(mySQLString)
+        db.query(mySQLString)
 
         res.redirect('..');
     })
@@ -63,7 +63,7 @@ app
 
         //await db.query(`            
         const mySQLString = ("INSERT INTO runner (userId, username, region, pronouns, joinDate) VALUES ('"+ body.userId +"', '"+ body.username +"', '"+ body.region +"', '"+ body.pronouns +"', '"+ body.joinDate +"')");
-        database.query(mySQLString)
+        db.query(mySQLString)
 
         res.redirect('..');
     })
@@ -74,7 +74,7 @@ app
 
         //await db.query(`            
         const mySQLString = ("INSERT INTO run (runId, gameId, categoryId, runTime, placement, datePlayed, isObsolete, runDescription) VALUES ('"+ body.runId +"', '"+ body.gameId +"', '"+ body.categoryId +"', '"+ body.runTime +"', '"+ body.placement +"', '"+ body.datePlayed +"', '"+ body.isObsolete +"', '"+ body.runDescription +"')");
-        database.query(mySQLString)
+        db.query(mySQLString)
 
         res.redirect('..');
     })
@@ -85,7 +85,7 @@ app
 
         //await db.query(`            
         const mySQLString = ("INSERT INTO moderatorfor (gameId, userId) VALUES ('"+ body.gameId +"', '"+ body.userId +"')");
-        database.query(mySQLString)
+        db.query(mySQLString)
 
         res.redirect('..');
     })
@@ -96,7 +96,7 @@ app
 
         //await db.query(`            
         const mySQLString = ("INSERT INTO playedby (runId, gameId, categoryId, userId) VALUES ('"+ body.runId +"', '"+ body.gameId +"', '"+ body.categoryId +"', '"+ body.userId +"')");
-        database.query(mySQLString)
+    	db.query(mySQLString)
 
         res.redirect('..');
     })
