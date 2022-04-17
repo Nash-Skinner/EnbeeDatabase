@@ -61,6 +61,16 @@ h3 {
     background-color: #ffffff;
     color: #4d5bf9;
 }
+table {
+    width: 100%;
+    border: 1px solid black;
+}
+th {
+    border: 1px solid black;
+}
+td {
+    border: 1px solid black;
+}
 @media screen and (max-width: 500px) {
     .container {
         font-size: 14px;

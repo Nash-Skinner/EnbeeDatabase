@@ -4,23 +4,36 @@ import { initializeDatabase } from './initializeDatabase.js';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import mysql from 'mysql';
+import path from 'path';
+import {fileURLToPath} from 'url';
 
-const db = initializeDatabase(config);
-const database = mysql.createConnection({host: config.host, user: config.user, password: config.password, database: config.database});
-const app = express()
+const db = mysql.createConnection({host: config.host, user: config.user, password: config.password, database: config.database});
+initializeDatabase(db, config);
+
+const app = express();
 const port = process.env.PORT || 3000;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app
     .use(morgan('dev'))
-    .use(express.static('public'))
-    .use(bodyParser.urlencoded({extended: true}))
+    .use(express.static(path.join(__dirname, 'public')))
+    .use(bodyParser.urlencoded({extended: false}))
     .use(bodyParser.json())
+
+    .set('views', path.join(__dirname, 'views'))
+    .set('view engine', 'ejs')
 
     // Get Game Table
     .get('/api/game', async(req,res) => {
         var sql = "SELECT * FROM game ORDER BY gameId";
-        database.query(sql, (err, result)=>{
-            console.log(result)
+        database.query(sql, async (err, result, fields) => {
+            if(err) throw err;
+            // res.json(Object.values(JSON.parse(JSON.stringify(result))));
+            res.forEach( (res) => {
+                console.log(`${result.gameId} ${result.abbrev}`)
+            });
+            res.redirect('..');
         })
     })
 
@@ -32,7 +45,7 @@ app
         const mySQLString = ("INSERT INTO game (gameId, abbrev, name, platforms, releaseYear, weblink) VALUES ('"+ body.gameId +"', '"+ body.abbrev +"', '"+ body.name +"', '"+ body.platforms +"', '"+ body.releaseYear +"', '"+ body.weblink +"')");
         database.query(mySQLString)
 
-        res.redirect('..');
+        res.redirect('/api/game');
     })
 
     // Post to SteamGame Table

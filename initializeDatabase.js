@@ -5,16 +5,14 @@
  */
 
 import Importer from 'mysql-import';
-import mysql from 'mysql';
 
 /**
  * Initializes the database and returns a MySQL Database Connection
  * 
  * @param config Configuration settings {host, user, password, database, resetDBOnLaunch}
  */
-function initializeDatabase(config) {
+function initializeDatabase(db, config) {
 	const importer = new Importer({host: config.host, user: config.user, password: config.password});
-	const db = mysql.createConnection({host: config.host, user: config.user, password: config.password});
 
 	// Connect to MySql
 	db.connect(err => {
