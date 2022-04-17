@@ -1,26 +1,61 @@
 import express from 'express';
-import config from './config.json';
+import config from './config.json' assert { type: "json" };
 import { initializeDatabase } from './initializeDatabase.js';
+
+import morgan from 'morgan';
+import bodyParser from 'body-parser';
+import { Prohairesis } from 'prohairesis';
 
 const db = initializeDatabase(config);
 const app = express()
+const port = process.env.PORT || 3000;
+const mySQLString = 'datasource=127.0.0.1;port=3306;username=Creator;password=Admin;database=enbeedatabase;';
+const database = new Prohairesis(mySQLString);
 
-// Landing page
-app.get("/", (req, res) => {
-    res.send('Hello World') 
-});
+app
+    .use(morgan('dev'))
+    .use(express.static('public'))
+    .use(bodyParser.urlencoded({extended: false}))
+    .use(bodyParser.json())
 
-// Post Table
-app.get("/posttable",(req, res) => {
-    let sql = "Select * from Game";
-    db.query(sql, err => {
-        if(err) {
-            throw err;
-        }
-        res.send("Post Table Created");
-    }) 
-});
+    .get('/api/game', async(req,res) => {
+        const game = await database.query(`
+            SELECT *
+            FROM game
+            ORDER BY gameId
+        `);
 
-app.listen("3000", () => {
-    console.log("Server Started on port 3000")
-})
+        res.json(game)
+    })
+
+    .post('/api/game', async(req, res) => {
+        const body = req.body;
+
+        database.execute(`            
+        INSERT INTO game (
+            gameId,
+            abbrev,
+            name,
+            platforms,
+            releaseYear,
+            weblink
+        ) VALUES (
+            @gameId,
+            @abbrev,
+            @name
+            @platforms,
+            @releaseYear,
+            @weblink,
+        )`, {
+            gameId: body.gameId,
+            abbrev: body.abbrev,
+            name: body.name,
+            platforms: body.platforms,
+            releaseYear: body.releaseYear,
+            weblink: body.weblink
+        })
+
+        res.json(req.body);
+    })
+
+    .listen(port, () => console.log(`Server Started on port ${port}`));
