@@ -1,82 +1,130 @@
 <!DOCTYPE html>
-<html>
-    <h1>Game Data</h1>
-        <form action="/api/game" method="POST">
-            <input name="gameId" placeholder="Game Id" type="text" maxlength="20" required/>
-            <input name="abbrev" placeholder="Abbrev" type="text" maxlength="20" required/>
-            <input name="name" placeholder="Name" type="text" maxlength="20" required/>
-            <input name="platforms" placeholder="Platforms" type="text" maxlength="20" required/>
-            <input name="releaseYear" placeholder="Abbrev" type="date" required/>
-            <input name="weblink" placeholder="Weblink" type="text" maxlength="20" required/>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, inital-scale=1.0" />
+        <title>Enbee Database</title>
+        <!-- Google Font-->
+        <link
+            herf="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+            rel="stylesheet"
+        />
+        <!-- Stylesheet -->
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <div class="container">
+            <div class="tabs">
+                <h3 class="active">Game Tab</h3>
+                <h3>Steam Game Tab</h3>
+                <h3>Category Tab</h3>
+                <h3>Runner Tab</h3>
+                <h3>Run Tab</h3>
+                <h3>Moderator For Tab</h3>
+                <h3>Played By Tab</h3>
+            </div>
 
-            <button type="submit">Submit</button>
-        </form>
+            <div class="tab-content">
+                <!-- First -->
+                <div class="active">
+                    <h4>Game Tab</h4>
+                    <form action="/api/game" method="POST">
+                        <input name="gameId" placeholder="Game Id" type="text" maxlength="20" required/>
+                        <input name="abbrev" placeholder="Abbrev" type="text" maxlength="20" required/>
+                        <input name="name" placeholder="Name" type="text" maxlength="20" required/>
+                        <input name="platforms" placeholder="Platforms" type="text" maxlength="20" required/>
+                        <input name="releaseYear" placeholder="Abbrev" type="date" required/>
+                        <input name="weblink" placeholder="Weblink" type="text" maxlength="20" required/>
+            
+                        <button type="submit">Submit</button>
+                    </form>     
+                </div>
 
-    <h1>SteamGame Data</h1>
-        <form action="/api/steamgame" method="POST">
-            <input name="appId" placeholder="App Id" type="number" min="0" required/>
-            <input name="srdcGameId" placeholder="Srdc Game Id" type="text" maxlength="20" required/>
-            <input name="developer" placeholder="Developer" type="text" maxlength="20"/>
-            <input name="releaseDate" placeholder="Release Date" type="date"/>
-            <input name="publisher" placeholder="Publisher" type="text" maxlength="20"/>
-            <input name="rating" placeholder="Rating" type="text" maxlength="20"/>
+                <!-- Second -->
+                <div>
+                    <h4>Steam Game Tab</h4>
+                    <form action="/api/steamgame" method="POST">
+                        <input name="appId" placeholder="App Id" type="number" min="0" required/>
+                        <input name="srdcGameId" placeholder="Srdc Game Id" type="text" maxlength="20" required/>
+                        <input name="developer" placeholder="Developer" type="text" maxlength="20"/>
+                        <input name="releaseDate" placeholder="Release Date" type="date"/>
+                        <input name="publisher" placeholder="Publisher" type="text" maxlength="20"/>
+                        <input name="rating" placeholder="Rating" type="text" maxlength="20"/>
+            
+                        <button type="submit">Submit</button>
+                    </form>
+                </div>
 
-            <button type="submit">Submit</button>
-        </form>
+                <!-- Third -->
+                <div>
+                    <h4>Category Tab</h4>
+                    <form action="/api/category" method="POST">
+                        <input name="gameId" placeholder="Game Id" type="text" maxlength="20" required/>
+                        <input name="categoryId" placeholder="Category Id" type="text" maxlength="20" required/>
+                        <input name="categoryName" placeholder="Category Name" type="text" maxlength="20"/>
+                        <input name="rules" placeholder="Rules" type="text" maxlength="1000"/>
+            
+                        <button type="submit">Submit</button>
+                    </form>
+                </div>
 
-    <h1>Category Data</h1>
-        <form action="/api/category" method="POST">
-            <input name="gameId" placeholder="Game Id" type="text" maxlength="20" required/>
-            <input name="categoryId" placeholder="Category Id" type="text" maxlength="20" required/>
-            <input name="categoryName" placeholder="Category Name" type="text" maxlength="20"/>
-            <input name="rules" placeholder="Rules" type="text" maxlength="1000"/>
+                <!-- Fourth -->
+                <div>
+                    <h4>Runner Tab</h4>
+                    <form action="/api/runner" method="POST">
+                        <input name="userId" placeholder="User Id" type="text" maxlength="20" required/>
+                        <input name="username" placeholder="Username" type="text" maxlength="10" required/>
+                        <input name="region" placeholder="Region" type="text" maxlength="10"/>
+                        <input name="pronouns" placeholder="Pronouns" type="text" maxlength="10"/>
+                        <input name="joinDate" placeholder="Join Date" type="date"/>
+            
+                        <button type="submit">Submit</button>
+                    </form>                    
+                </div>
 
-            <button type="submit">Submit</button>
-        </form>
+                <!-- Fifth -->
+                <div>
+                    <h4>Run Tab</h4>
+                    <form action="/api/run" method="POST">
+                        <input name="runId" placeholder="Run Id" type="text" maxlength="20" required/>
+                        <input name="gameId" placeholder="Game Id" type="text" maxlength="20" required/>
+                        <input name="categoryId" placeholder="Category Id" type="text" maxlength="20" required/>
+                        <input name="runTime" placeholder="Run Time" value="00:00:00" type="test" required/>
+                        <input name="placement" placeholder="Placement" type="number" min="1"/>
+                        <input name="datePlayed" placeholder="Date Played" type="date"/>
+                        <input name="isObsolete" placeholder="Is Obsolete" type="number" max="1" min="0"/>
+                        <input name="runDescription" placeholder="Run Description" type="text" maxlength="1000"/>
+            
+                        <button type="submit">Submit</button>
+                    </form>                 
+                </div>
 
-    <h1>Runner Data</h1>
-        <form action="/api/runner" method="POST">
-            <input name="userId" placeholder="User Id" type="text" maxlength="20" required/>
-            <input name="username" placeholder="Username" type="text" maxlength="10" required/>
-            <input name="region" placeholder="Region" type="text" maxlength="10"/>
-            <input name="pronouns" placeholder="Pronouns" type="text" maxlength="10"/>
-            <input name="joinDate" placeholder="Join Date" type="date"/>
+                <!-- Sixth -->
+                <div>
+                    <h4>Moderator For Tab</h4>
+                    <form action="/api/moderatorfor" method="POST">
+                        <input name="gameId" placeholder="Game Id" type="text" maxlength="20" required/>
+                        <input name="userId" placeholder="User Id" type="text" maxlength="20" required/>
+            
+                        <button type="submit">Submit</button>
+                    </form>                 
+                </div>
 
-            <button type="submit">Submit</button>
-        </form>
+                <!-- Seventh -->
+                <div>
+                    <h4>Played By Tab</h4>
+                    <form action="/api/playedby" method="POST">
+                        <input name="runId" placeholder="Game Id" type="text" maxlength="20" required/>
+                        <input name="gameId" placeholder="Abbrev" type="text" maxlength="20" required/>
+                        <input name="categoryId" placeholder="Category Id" type="text" maxlength="20" required/>
+                        <input name="userId" placeholder="User Id" type="text" maxlength="20" required/>
+            
+                        <button type="submit">Submit</button>
+                    </form>                
+                </div>
+            </div>
 
-    <h1>Run Data</h1>
-        <form action="/api/run" method="POST">
-            <input name="runId" placeholder="Run Id" type="text" maxlength="20" required/>
-            <input name="gameId" placeholder="Game Id" type="text" maxlength="20" required/>
-            <input name="categoryId" placeholder="Category Id" type="text" maxlength="20" required/>
-            <input name="runTime" placeholder="Run Time" value="00:00:00" type="test" required/>
-            <input name="placement" placeholder="Placement" type="number" min="1"/>
-            <input name="datePlayed" placeholder="Date Played" type="date"/>
-            <input name="isObsolete" placeholder="Is Obsolete" type="number" max="1" min="0"/>
-            <input name="runDescription" placeholder="Run Description" type="text" maxlength="1000"/>
+        </div>
+        <script src="script.js"></script>
 
-            <button type="submit">Submit</button>
-        </form>
-
-    <h1>ModeratorFor Data</h1>
-        <form action="/api/moderatorfor" method="POST">
-            <input name="gameId" placeholder="Game Id" type="text" maxlength="20" required/>
-            <input name="userId" placeholder="User Id" type="text" maxlength="20" required/>
-
-            <button type="submit">Submit</button>
-        </form>
-
-    <h1>PlayedBy Data</h1>
-        <form action="/api/playedby" method="POST">
-            <input name="runId" placeholder="Game Id" type="text" maxlength="20" required/>
-            <input name="gameId" placeholder="Abbrev" type="text" maxlength="20" required/>
-            <input name="categoryId" placeholder="Category Id" type="text" maxlength="20" required/>
-            <input name="userId" placeholder="User Id" type="text" maxlength="20" required/>
-
-            <button type="submit">Submit</button>
-        </form>
-        
-        <table action="/api/game" method="GET" class = "table">
-        </table>
+    </body>
 </html>
