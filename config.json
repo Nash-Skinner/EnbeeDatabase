@@ -1,7 +1,7 @@
 {
 	"host": "localhost",
-	"user": "Creator",
-	"password": "Admin",
+	"user": "root",
+	"password": "",
 	"database": "EnbeeDatabase",
 	"resetDBOnLaunch": true
 }

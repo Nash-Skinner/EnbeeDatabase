@@ -4,10 +4,10 @@ USE EnbeeDatabase;
 CREATE TABLE Game (
 	gameId varchar(20) NOT NULL,
 	abbrev varchar(20) NOT NULL,			
-    name varchar(20) NULL,
-    platforms varchar(20) NULL,
-    releaseYear YEAR NULL,
-	weblink varchar(20) NULL,
+    name varchar(20) NOT NULL,
+    platforms varchar(20) NOT NULL,
+    releaseYear YEAR NOT NULL,
+	weblink varchar(20) NOT NULL,
     PRIMARY KEY (gameId)
 );
                 
