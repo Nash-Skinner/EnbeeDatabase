@@ -1,12 +1,18 @@
 import express from 'express';
 import config from './config.json'; //assert{ type: "json" };
-import { initializeDatabase } from './initializeDatabase.js';
+import { initializeDatabase, useDatabase } from './initializeDatabase.js';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import mysql from 'mysql';
 
+import { testDBOperations } from './testDatabaseOperations.js';
+
 const db = mysql.createConnection({host: config.host, user: config.user, password: config.password, database: config.database});
-initializeDatabase(db, config);
+initializeDatabase(db, config).then(() => {
+	useDatabase(db, config.database).then(() => {
+		testDBOperations(db); 
+	});
+});
 const app = express()
 const port = process.env.PORT || 3000;
 

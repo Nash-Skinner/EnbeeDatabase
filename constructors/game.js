@@ -3,7 +3,7 @@
  * 
  * Primary Key: gameId
  */
-class Game {
+export default class Game {
     constructor(gameId, abbrev, name, platforms, releaseYear, weblink) {
         this.gameId = gameId;
 		this.abbrev = abbrev;
@@ -12,6 +12,8 @@ class Game {
 		this.releaseYear = releaseYear;
 		this.weblink = weblink;
     }
-}
 
-export { Game };
+	toSQL() {
+		return `INSERT INTO Game(gameId, abbrev, name, platforms, releaseYear, weblink) VALUES('${this.gameId}', '${this.abbrev}', '${this.name}', '${this.platforms}', '${this.releaseYear}', '${this.weblink}');`;
+	}
+}

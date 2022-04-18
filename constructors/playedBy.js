@@ -3,13 +3,15 @@
  * 
  * Primary Key: {runId, gameId, categoryId, userId}
  */
- class PlayedBy {
+export default class PlayedBy {
     constructor(runId, gameId, categoryId, userId) {
         this.runId = runId;
 		this.gameId = gameId;
 		this.categoryId = categoryId;
         this.userId = userId;
     }
-}
 
-export { PlayedBy };
+	toSQL() {
+		return `INSERT INTO PlayedBy(runId, gameId, categoryId, userId) VALUES('${this.runId}', '${this.gameId}', '${this.categoryId}', '${this.userId}');`;
+	}
+}

@@ -3,13 +3,15 @@
  * 
  * Primary Key: {gameId, categoryId}
  */
-class Category {
+export default class Category {
     constructor(gameId, categoryId, categoryName, rules) {
 		this.gameId = gameId;
 		this.categoryId = categoryId;
         this.categoryName = categoryName;
         this.rules = rules;
     }
-}
 
-export { Category };
+	toSQL() {
+		return `INSERT INTO Category(gameId, categoryId, categoryName, rules) VALUES('${this.gameId}', ${this.categoryId}, '${this.categoryName}', '${this.rules}');`;
+	}
+}

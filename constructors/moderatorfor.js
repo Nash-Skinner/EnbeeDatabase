@@ -3,11 +3,13 @@
  * 
  * Primary Key: {gameId, userId}
  */
-class ModeratorFor {
+export default class ModeratorFor {
     constructor(gameId, userId) {
         this.gameId = gameId;
         this.userId = userId;
     }
-}
 
-export { ModeratorFor };
+	toSQL() {
+		return `INSERT INTO ModeratorFor(gameId, userId) VALUES('${this.gameId}', '${this.userId}');`;
+	}
+}

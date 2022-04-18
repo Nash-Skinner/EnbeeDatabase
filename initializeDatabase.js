@@ -5,7 +5,6 @@
  */
 
 import Importer from 'mysql-import';
-import mysql from 'mysql';
 
 /**
  * Initializes the database from a MySQL Connection
@@ -51,4 +50,17 @@ function initializeDatabase(db, config) {
 	return promise;
 }
 
-export { initializeDatabase };
+function useDatabase(db, database) {
+	let promise = new Promise((resolve, reject) => {
+		let sql = `USE ${database}`;
+		db.query(sql, (err) => {
+			if (err) { reject(err); return; }
+			console.log(`Using database ${database}.`);
+			resolve(db);
+		});
+	});
+
+	return promise;
+}
+
+export { initializeDatabase, useDatabase };

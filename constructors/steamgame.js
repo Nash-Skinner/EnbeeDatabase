@@ -3,7 +3,7 @@
  * 
  * Primary Key: {app_id}
  */
-class SteamGame {
+export default class SteamGame {
 	constructor(appId, abbrev, developer, releaseDate, publisher, rating) {
 		this.appId = appId;
 		this.abbrev = abbrev;
@@ -12,6 +12,8 @@ class SteamGame {
 		this.publisher = publisher;
 		this.rating = rating;
 	}
-}
 
-export { SteamGame };
+	toSQL() {
+		return `INSERT INTO SteamGame(appId, abbrev, developer, releaseDate, publisher, rating) VALUES('${this.appId}', '${this.abbrev}', '${this.developer}', '${this.releaseDate}', '${this.publisher}', '${this.rating}');`;
+	}
+}

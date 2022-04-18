@@ -3,7 +3,7 @@
  * 
  * Primary Key: {runId, gameId, categoryId}
  */
-class Run {
+export default class Run {
 	constructor(runId, gameId, categoryId, runTime, placement, datePlayed, isObsolete, runDescription) {
 		this.runId = runId;
 		this.gameId = gameId;
@@ -14,6 +14,8 @@ class Run {
 		this.isObsolete = isObsolete;
 		this.runDescription = runDescription;
 	}
-}
 
-export { Run };
+	toSQL() {
+		return `INSERT INTO Run(runId, gameId, categoryId, runTime, placement, datePlayed, isObsolete, runDescription) VALUES('${this.runId}', '${this.gameId}', '${this.categoryId}', '${this.runTime}', '${this.placement}', '${this.datePlayed}', '${this.isObsolete}', '${this.runDescription}');`;
+	}
+}
