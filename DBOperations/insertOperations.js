@@ -4,7 +4,14 @@
  * Defines functions for inserting data into the database.
  */
 
-function insertDb(db, data) {
+/**
+ * Inserts an object into the database
+ * 
+ * @param {*} db SQL Connection
+ * @param {*} data Object to insert, must have a toSQL() function 
+ * @returns Promise for when the operation is complete
+ */
+export function insertDb(db, data) {
 
 	let promise = new Promise((resolve, reject) => {
 
@@ -21,5 +28,3 @@ function insertDb(db, data) {
 
 	return promise;
 }
-
-export { insertDb };

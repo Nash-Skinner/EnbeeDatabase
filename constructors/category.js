@@ -12,6 +12,6 @@ export default class Category {
     }
 
 	toSQL() {
-		return `INSERT INTO Category(gameId, categoryId, categoryName, rules) VALUES('${this.gameId}', ${this.categoryId}, '${this.categoryName}', '${this.rules}');`;
+		return `INSERT INTO Category(gameId, categoryId, categoryName, rules) VALUES('${this.gameId}', '${this.categoryId}', '${this.categoryName}', '${this.rules}');`;
 	}
 }

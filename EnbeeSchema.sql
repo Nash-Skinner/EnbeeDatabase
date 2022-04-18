@@ -14,10 +14,10 @@ CREATE TABLE Game (
 CREATE TABLE SteamGame (
     appId int NOT NULL,
     srdcGameId varchar(20) NOT NULL,
-    developer varchar(20) NULL,
+    developer varchar(50) NULL,
     releaseDate DATE NULL,
-    publisher varchar(20) NULL,
-    rating varchar(20) NULL,
+    publisher varchar(50) NULL,
+    rating varchar(50) NULL,
     PRIMARY KEY (appId),
     FOREIGN KEY (srdcGameId) REFERENCES Game(gameId)
 );
@@ -25,7 +25,7 @@ CREATE TABLE SteamGame (
 CREATE TABLE Category (
 	gameId varchar(20) NOT NULL,
 	categoryId varchar(20) NOT NULL,
-    categoryName varchar(10) NULL,
+    categoryName varchar(50) NULL,
     rules varchar(1000) NULL,
     PRIMARY KEY (gameId, categoryId),
     FOREIGN KEY (gameId) REFERENCES Game(gameId)
@@ -33,9 +33,9 @@ CREATE TABLE Category (
 
 CREATE TABLE Runner (
 	userId varchar(20) NOT NULL,
-    username varchar(10) NOT NULL,
-    region varchar(10) NULL,
-    pronouns varchar(10) NULL,
+    username varchar(25) NOT NULL,
+    region varchar(25) NULL,
+    pronouns varchar(25) NULL,
     joinDate DATE NULL,
     PRIMARY KEY (userId)
 );
