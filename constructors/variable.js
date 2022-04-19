@@ -14,6 +14,6 @@ export default class Variable {
     }
 
 	toSQL() {
-		return `INSERT INTO Variable(gameId, categoryId, variableId, variableName) VALUES('${this.gameId}', '${this.categoryId}', '${this.variableId}', '${this.variableValueId}', '${this.variableName}', '${this.variableValue}');`;
+		return `INSERT INTO Variable(gameId, categoryId, variableId, variableValudId, variableName, variableValue) VALUES('${this.gameId}', '${this.categoryId}', '${this.variableId}', '${this.variableValueId}', '${this.variableName}', '${this.variableValue}');`;
 	}
 }
