@@ -6,39 +6,70 @@
 
 import Importer from 'mysql-import';
 
+function connectDb(db) {
+
+	let promise = new Promise((resolve, reject) => {
+		db.connect((err) => {
+			if (err) { reject(err); return; }
+			resolve(`Connected as ID: ${db.threadId}`);
+		});
+	});
+
+	return promise;
+}
+
+function resetDBOnLaunch(db, config) {
+	
+	let promise = new Promise((resolve, reject) => {
+		if (config.resetDBOnLaunch) {
+			let sql = `DROP DATABASE IF EXISTS ${config.database}`;
+			db.query(sql, (err) => {
+				if (err) { reject(err); return; }
+				resolve(`Dropped database ${config.database}.`);
+			});
+		}
+	});
+
+	return promise;
+}
+
+function importSchema(db, config) {
+	const importer = new Importer({ host: config.host, user: config.user, password: config.password });
+	
+	let promise = new Promise((resolve, reject) => {
+		importer.import(config.schema).then(() => {
+			var files_imported = importer.getImported();
+			console.log(`${files_imported.length} SQL file(s) imported.`);
+			resolve(db);
+		}).catch(err => {
+			console.log(`Error Importing SQL: ${err}`);
+			resolve(db);
+		});
+	});
+
+	return promise;
+}
+
 /**
  * Initializes the database from a MySQL Connection
  * 
  * @param config Configuration settings {host, user, password, database, resetDBOnLaunch}
  */
-function initializeDatabase(db, config) {
-	const importer = new Importer({ host: config.host, user: config.user, password: config.password });
-
+export function initializeDatabase(db, config) {
+	
 	let promise = new Promise((resolve, reject) => {
 		try {
-			db.connect((err) => {
-				if (err) throw err;
+			connectDb(db).then((result) => {
+				console.log(result);
 
-				console.log(`Connected as ID: ${db.threadId}`);
-			});
+				resetDBOnLaunch(db, config).then((result) => {
+					console.log(result);
 
-			if (config.resetDBOnLaunch) {
-				let sql = `DROP DATABASE IF EXISTS EnbeeDatabase`;
-				db.query(sql, (err) => {
-					if (err) throw err;
-					console.log(`Dropped database ${config.database}.`);
+					importSchema(db, config).then((db) => {
+						resolve(db);
+					});
 				});
-			}
-
-			importer.import(config.schema).then(() => {
-				var files_imported = importer.getImported();
-				console.log(`${files_imported.length} SQL file(s) imported.`);
-				resolve(db);
-			}).catch(err => {
-				console.log(`Error Importing SQL: ${err}`);
-				resolve(db);
 			});
-
 		}
 		catch (e) {
 			console.log("Error: " + e);
@@ -50,7 +81,7 @@ function initializeDatabase(db, config) {
 	return promise;
 }
 
-function useDatabase(db, database) {
+export function useDatabase(db, database) {
 	let promise = new Promise((resolve, reject) => {
 		let sql = `USE ${database}`;
 		db.query(sql, (err) => {
@@ -62,5 +93,3 @@ function useDatabase(db, database) {
 
 	return promise;
 }
-
-export { initializeDatabase, useDatabase };

@@ -7,7 +7,7 @@ import mysql from 'mysql';
 
 import { testDBOperations } from './testDatabaseOperations.js';
 
-const db = mysql.createConnection({host: config.host, user: config.user, password: config.password, database: config.database});
+const db = mysql.createConnection({host: config.host, user: config.user, password: config.password});
 initializeDatabase(db, config).then(() => {
 	useDatabase(db, config.database).then(() => {
 		testDBOperations(db); 

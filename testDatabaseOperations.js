@@ -14,21 +14,23 @@ import * as InsertDB from './DBOperations/insertOperations.js';
 import * as QueryDB from './DBOperations/queryOperations.js';
 import Promise from 'bluebird';
 
+//import { importGame } from './API Helpers/getSRDCData.js';
+
 function insertTestData(db) {
 	let testDataPromise = new Promise((resolve, reject) => {
 
-		const Games = [new Game('yd4ljx1e', 'ahit', 'A Hat in Time', 'PS4, XboxOne, PC, Switch, PS5, XboxSeriesX', '2017', 'https://www.speedrun.com/ahit'), 
-		new Game('ldez0jd3', 'crosscode', 'CrossCode', 'PS4, XboxOne, PC, Mac, Linux, Switch', '2018', 'https://www.speedrun.com/crosscode')];
+		const Games = [new Game('yd4ljx1e', 'ahit', 'A Hat in Time', '2017', 'https://www.speedrun.com/ahit'), 
+		new Game('ldez0jd3', 'crosscode', 'CrossCode', '2018', 'https://www.speedrun.com/crosscode')];
 
-		const Categories = [new Category('yd4ljx1e', 'anypercentcategory', 'Any%', 'Don\\\'t run really fast unless I tell you so'),
-		new Category('yd4ljx1e', 'atpcategory', 'ATP', 'I am super speed'),
-		new Category('ldez0jd3', 'anypercentcategory', 'Any% NMG', 'CrossCode gaming')];
+		const Categories = [new Category('yd4ljx1e', 'anypercentcategory', 'Any%'),
+		new Category('yd4ljx1e', 'atpcategory', 'ATP'),
+		new Category('ldez0jd3', 'anypercentcategory', 'Any% NMG')];
 
-		const Runners = [new Runner('user1', 'EpicYoshiMaster', 'United States', 'They/Them', '01-17-2018'),
-		new Runner('user2', 'MaybeEpicYoshiMaster', 'United States', 'She/Her', '04-17-2022')];
+		const Runners = [new Runner('user1', 'EpicYoshiMaster', 'United States', '2018-01-17'),
+		new Runner('user2', 'MaybeEpicYoshiMaster', 'United States', '2022-04-17')];
 
-		const Runs = [new Run('run1', 'yd4ljx1e', 'anypercentcategory', '1:52.859', '1', '05-17-2019', 'false', 'I really liked this speedrun (lie)'),
-		new Run('run2', 'yd4ljx1e', 'atpcategory', '12:11:52.60', '54', '05-17-2025', 'false', 'Slow *rolling eyes*')];
+		const Runs = [new Run('run1', 'yd4ljx1e', 'anypercentcategory', '1:52.859', '1', '2019-05-17'),
+		new Run('run2', 'yd4ljx1e', 'atpcategory', '12:11:52.60', '54', '2025-05-17')];
 
 		const PlayedBys = [new PlayedBy('run1', 'yd4ljx1e', 'anypercentcategory', 'user1'),
 		new PlayedBy('run2', 'yd4ljx1e', 'atpcategory', 'user2')];
@@ -88,8 +90,11 @@ function insertTestData(db) {
 	return testDataPromise;
 }
 
-function testDBOperations(db) {
+export function testDBOperations(db) {
 
+	//importGame(db, 'crosscode');
+
+	
 	insertTestData(db).then(() => {
 		console.log('Inserted test data');
 
@@ -108,5 +113,3 @@ function testDBOperations(db) {
 		});
 	});
 }
-
-export { testDBOperations };
