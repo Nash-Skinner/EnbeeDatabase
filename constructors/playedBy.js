@@ -11,7 +11,15 @@ export default class PlayedBy {
         this.userId = userId;
     }
 
+	getSchema() {
+		return `PlayedBy(runId, gameId, categoryId, userId)`;
+	}
+
+	getValues() {
+		return `('${this.runId}', '${this.gameId}', '${this.categoryId}', '${this.userId}')`;
+	}
+
 	toSQL() {
-		return `INSERT INTO PlayedBy(runId, gameId, categoryId, userId) VALUES('${this.runId}', '${this.gameId}', '${this.categoryId}', '${this.userId}');`;
+		return this.getSchema() + ' VALUES' + this.getValues() + ';';
 	}
 }

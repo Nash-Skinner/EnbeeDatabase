@@ -58,6 +58,17 @@ CREATE TABLE Run (
     PRIMARY KEY (runId, gameId, categoryId),
     FOREIGN KEY (gameId, categoryId) REFERENCES Category(gameId, categoryId)
 );
+
+CREATE TABLE RunHasVariable (
+	runId varchar(20) NOT NULL,
+	gameId varchar(20) NOT NULL,
+	categoryId varchar(20) NOT NULL,
+	variableId varchar(20) NOT NULL,
+	variableValueId varchar(20) NOT NULL,
+	PRIMARY KEY (runId, gameId, categoryId, variableId, variableValueId),
+	FOREIGN KEY (runId, gameId, categoryId) REFERENCES Run(runId, gameId, categoryId),
+	FOREIGN KEY (gameId, categoryId, variableId, variableValueId) REFERENCES Variable(gameId, categoryId, variableId, variableValueId)
+);
     
 CREATE TABLE PlayedBy (
 	runId varchar(20) NOT NULL,

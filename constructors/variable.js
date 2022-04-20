@@ -13,7 +13,15 @@ export default class Variable {
 		this.variableValue = variableValue;
     }
 
+	getSchema() {
+		return `Variable(gameId, categoryId, variableId, variableValueId, variableName, variableValue)`;
+	}
+
+	getValues() {
+		return `('${this.gameId}', '${this.categoryId}', '${this.variableId}', '${this.variableValueId}', '${this.variableName}', '${this.variableValue}')`;
+	}
+
 	toSQL() {
-		return `INSERT INTO Variable(gameId, categoryId, variableId, variableValudId, variableName, variableValue) VALUES('${this.gameId}', '${this.categoryId}', '${this.variableId}', '${this.variableValueId}', '${this.variableName}', '${this.variableValue}');`;
+		return this.getSchema() + ' VALUES' + this.getValues() + ';';
 	}
 }

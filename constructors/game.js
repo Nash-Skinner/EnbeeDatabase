@@ -12,7 +12,15 @@ export default class Game {
 		this.weblink = weblink;
     }
 
+	getSchema() {
+		return `Game(gameId, abbrev, name, releaseYear, weblink)`;
+	}
+
+	getValues() {
+		return `('${this.gameId}', '${this.abbrev}', '${this.name}', '${this.releaseYear}', '${this.weblink}')`;
+	}
+
 	toSQL() {
-		return `INSERT INTO Game(gameId, abbrev, name, releaseYear, weblink) VALUES('${this.gameId}', '${this.abbrev}', '${this.name}', '${this.releaseYear}', '${this.weblink}');`;
+		return this.getSchema() + ' VALUES' + this.getValues() + ';';
 	}
 }
