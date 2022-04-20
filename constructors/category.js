@@ -10,7 +10,15 @@ export default class Category {
         this.categoryName = categoryName;
     }
 
+	getSchema() {
+		return `Category(gameId, categoryId, categoryName)`;
+	}
+
+	getValues() {
+		return `('${this.gameId}', '${this.categoryId}', '${this.categoryName}')`;
+	}
+
 	toSQL() {
-		return `INSERT INTO Category(gameId, categoryId, categoryName) VALUES('${this.gameId}', '${this.categoryId}', '${this.categoryName}');`;
+		return this.getSchema() + ' VALUES' + this.getValues() + ';';
 	}
 }

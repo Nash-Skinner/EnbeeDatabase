@@ -1,13 +1,13 @@
-//HTTPS Request Support
 import axios from 'axios';
-//import Promise from 'bluebird';
-
 import Game from '../constructors/game.js';
 import Category from '../constructors/category.js'
 import Variable from '../constructors/variable.js';
 import Run from '../constructors/run.js';
 import PlayedBy from '../constructors/playedBy.js';
 import Runner from '../constructors/runner.js';
+import RunHasVariable from '../constructors/runHasVariable.js';
+
+import * as InsertDB from '../DBOperations/insertOperations.js';
 
 export function importGame(db, gameAbbrev) {
 
@@ -16,7 +16,7 @@ export function importGame(db, gameAbbrev) {
 	getGameAndCategoryInfo(gameAbbrev).then((gameCatInfo) => {
 		let Games = new Game(gameCatInfo.id, gameCatInfo.abbreviation, gameCatInfo.names.international, gameCatInfo.released, gameCatInfo.weblink);
 		console.log(`Found Game: ${Games.name}`);
-		let Categories = [], Variables = [], Runs = [], PlayedBys = [], Runners = [];
+		let Categories = [], Variables = [], Runs = [], RunHasVariables = [], PlayedBys = [], Runners = [];
 
 		parseCategoriesAndVariables(gameCatInfo, Categories, Variables);
 		const LeaderboardPromises = [];
@@ -24,7 +24,7 @@ export function importGame(db, gameAbbrev) {
 		console.log(`Beginning Importing ${Categories.length} Categories`);
 
 		for (let i = 0; i < Categories.length; i++) {
-			let leaderboardPromise = grabLeaderboard(Categories[i].gameId, Categories[i].categoryId, Runs, PlayedBys, Runners);
+			let leaderboardPromise = grabLeaderboard(Categories[i].gameId, Categories[i].categoryId, Runs, RunHasVariables, PlayedBys, Runners);
 			leaderboardPromise.then(() => {
 				console.log(`Finished Importing ${Categories[i].categoryName}`);
 			}).catch((error) => {
@@ -34,13 +34,48 @@ export function importGame(db, gameAbbrev) {
 		}
 
 		Promise.all(LeaderboardPromises).then(() => {
-			console.log(`Finished Importing ${Games.name}: ${Categories.length} Categories, ${Variables.length} Variables, ${Runs.length} Runs, ${PlayedBys.length} PlayedBys, ${Runners.length} Runners`);
+			console.log(`Finished Importing ${Games.name}: ${Categories.length} Categories, ${Variables.length} Variables, ${Runs.length} Runs, ${RunHasVariables.length} RunHasVariables, ${Runners.length} Runners, ${PlayedBys.length} PlayedBys`);
+
+			InsertDB.insertDb(db, Games, true).then(() => {
+
+				console.log(`Inserted Game: ${Games.name}`);
+				InsertDB.insertArrayDb(db, Categories, true).then(() => {
+
+					console.log(`Inserted ${Categories.length} Categories`);
+					InsertDB.insertArrayDb(db, Variables, true).then(() => {
+
+						console.log(`Inserted ${Variables.length} Variables`);
+						InsertDB.insertArrayDb(db, Runs, true).then(() => {
+
+							console.log(`Inserted ${Runs.length} Runs`);
+							InsertDB.insertArrayDb(db, RunHasVariables, true).then(() => {
+
+								console.log(`Inserted ${RunHasVariables.length} RunHasVariables`);
+								InsertDB.insertArrayDb(db, Runners, true).then(() => {
+
+									console.log(`Inserted ${Runners.length} Runners`);
+									InsertDB.insertArrayDb(db, PlayedBys, true).then(() => {
+
+										console.log(`Inserted ${PlayedBys.length} PlayedBys`);
+										console.log(`Added to Database: ${Games.name}`);
+									});
+								});
+							});
+						});
+					});
+				});
+			});
+
 		}).catch((error) => {
 			console.log(error);
 		});
 	});
 }
 
+/**
+ * Reads data from /games/[game]?embed=categories.variables
+ * and parses them into Categories and Variables
+ */
 function parseCategoriesAndVariables(gameCatInfo, Categories, Variables) {
 
 	for (let i = 0; i < gameCatInfo.categories.data.length; i++) {
@@ -70,15 +105,15 @@ function parseCategoriesAndVariables(gameCatInfo, Categories, Variables) {
 	}
 }
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function grabLeaderboard(gameId, categoryId, Runs, PlayedBys, Runners) {
+/**
+ * Grabs, reads, and parse data from /leaderboards/[game]/categories/[category]?embed=players,variables
+ * and places it into PlayedBys and Runners
+ */
+function grabLeaderboard(gameId, categoryId, Runs, RunHasVariables, PlayedBys, Runners) {
 	let promise = new Promise((resolve, reject) => {
 		let leaderboardPromise = getGameCategoryLeaderboard(gameId, categoryId);
 		leaderboardPromise.then((leaderboard) => {
-			parseLeaderboardRunsAndRunners(leaderboard, Runs, PlayedBys, Runners);
+			parseLeaderboardRunsAndRunners(leaderboard, Runs, RunHasVariables, PlayedBys, Runners);
 			resolve();
 		}).catch((error) => {
 			reject(error);
@@ -88,11 +123,19 @@ function grabLeaderboard(gameId, categoryId, Runs, PlayedBys, Runners) {
 	return promise;
 }
 
-function parseLeaderboardRunsAndRunners(leaderboard, Runs, PlayedBys, Runners) {
+/**
+ * Parses the leaderboard data into Runs, PlayedBys, and Runners
+ */
+function parseLeaderboardRunsAndRunners(leaderboard, Runs, RunHasVariables, PlayedBys, Runners) {
 
 	for (let i = 0; i < leaderboard.runs.length; i++) {
 		let run = leaderboard.runs[i].run;
 		let runObj = new Run(run.id, run.game, run.category, run.times.primary, leaderboard.runs[i].place, run.date);
+
+		for(let k in run.values) {
+			let runHasVariableObj = new RunHasVariable(run.id, run.game, run.category, k, run.values[k]);
+			RunHasVariables.push(runHasVariableObj);
+		}
 
 		for (let j = 0; j < run.players.length; j++) {
 			let player = run.players[j];
@@ -127,6 +170,9 @@ function parseLeaderboardRunsAndRunners(leaderboard, Runs, PlayedBys, Runners) {
 	}
 }
 
+/**
+ * Finds Game, Category, and Variable information given an srdc game abbreviation
+ */
 function getGameAndCategoryInfo(gameAbbrev) {
 
 	let promise = new Promise((resolve, reject) => {
@@ -142,6 +188,9 @@ function getGameAndCategoryInfo(gameAbbrev) {
 	return promise;
 }
 
+/**
+ * Finds the leaderboard for a given game and category (needs to be mapped to variables for the real leaderboard)
+ */
 function getGameCategoryLeaderboard(gameId, categoryId) {
 	let promise = new Promise((resolve, reject) => {
 		axios.get(`https://speedrun.com/api/v1/leaderboards/${gameId}/category/${categoryId}?embed=players,variables`)

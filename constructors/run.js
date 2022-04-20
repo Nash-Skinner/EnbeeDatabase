@@ -13,7 +13,15 @@ export default class Run {
 		this.datePlayed = datePlayed;
 	}
 
+	getSchema() {
+		return `Run(runId, gameId, categoryId, runTime, placement, datePlayed)`;
+	}
+
+	getValues() {
+		return `('${this.runId}', '${this.gameId}', '${this.categoryId}', '${this.runTime}', '${this.placement}', '${this.datePlayed}')`;
+	}
+
 	toSQL() {
-		return `INSERT INTO Run(runId, gameId, categoryId, runTime, placement, datePlayed) VALUES('${this.runId}', '${this.gameId}', '${this.categoryId}', '${this.runTime}', '${this.placement}', '${this.datePlayed}');`;
+		return this.getSchema() + ' VALUES' + this.getValues() + ';';
 	}
 }

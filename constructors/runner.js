@@ -11,7 +11,15 @@ export default class Runner {
         this.joinDate = joinDate;
     }
 
+	getSchema() {
+		return `Runner(userId, username, region, joinDate)`;
+	}
+
+	getValues() {
+		return `('${this.userId}', '${this.username}', '${this.region}', '${this.joinDate}')`;
+	}
+
 	toSQL() {
-		return `INSERT INTO Runner(userId, username, region, joinDate) VALUES('${this.userId}', '${this.username}', '${this.region}', '${this.joinDate}');`;
+		return this.getSchema() + ' VALUES' + this.getValues() + ';';
 	}
 }

@@ -13,7 +13,15 @@ export default class SteamGame {
 		this.rating = rating;
 	}
 
+	getSchema() {
+		return `SteamGame(appId, abbrev, developer, releaseDate, publisher, rating)`;
+	}
+
+	getValues() {
+		return `('${this.appId}', '${this.abbrev}', '${this.developer}', '${this.releaseDate}', '${this.publisher}', '${this.rating}')`;
+	}
+
 	toSQL() {
-		return `INSERT INTO SteamGame(appId, abbrev, developer, releaseDate, publisher, rating) VALUES('${this.appId}', '${this.abbrev}', '${this.developer}', '${this.releaseDate}', '${this.publisher}', '${this.rating}');`;
+		return this.getSchema() + ' VALUES' + this.getValues() + ';';
 	}
 }

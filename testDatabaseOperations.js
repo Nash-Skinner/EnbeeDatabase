@@ -14,7 +14,7 @@ import * as InsertDB from './DBOperations/insertOperations.js';
 import * as QueryDB from './DBOperations/queryOperations.js';
 import Promise from 'bluebird';
 
-//import { importGame } from './API Helpers/getSRDCData.js';
+import { importGame } from './API Helpers/getSRDCData.js';
 
 function insertTestData(db) {
 	let testDataPromise = new Promise((resolve, reject) => {
@@ -92,9 +92,9 @@ function insertTestData(db) {
 
 export function testDBOperations(db) {
 
-	//importGame(db, 'crosscode');
+	importGame(db, 'crosscode');
 
-	
+	/*
 	insertTestData(db).then(() => {
 		console.log('Inserted test data');
 
@@ -111,5 +111,5 @@ export function testDBOperations(db) {
 		runByRunner.then((result) => {
 			console.log('All Runs JOIN Runners JOIN PlayedBy: ' + JSON.stringify(result, undefined, 2));
 		});
-	});
+	});*/
 }
