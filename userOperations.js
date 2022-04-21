@@ -96,6 +96,41 @@ export function getGameCategoryRunsAndRunners(db, gameId, categoryId) {
 	return promise;
 }
 
+export function getTotalGameTimeAll(db) {
+
+	let sqlSelect = `SELECT name, Sum(runTime) AS totalTime`;
+	let sqlFrom = `FROM Run, Game`;
+	let sqlWhere = `WHERE Run.gameId = Game.gameId`;
+	let sqlOrder = `GROUP BY Run.gameId ORDER BY totalTime`;
+	
+	let sql = `${sqlSelect} ${sqlFrom} ${sqlWhere} ${sqlOrder}`;
+
+	let promise = new Promise((resolve, reject) => {
+		QueryDB.runQueryDb(db, sql).then((result) => {
+			result.forEach((game) => {
+				game.totalTime = convertToHMS(game.totalTime);
+			});
+
+			resolve(result);
+		});
+	});
+
+	return promise;
+}
+
+export function getTotalGameCategoryTime(db, gameId, categoryId) {
+
+	let sql = `SELECT SUM(runTime) AS totalTime FROM Run WHERE gameId = \'${gameId}\' AND categoryId = \'${categoryId}\'`;
+
+	let promise = new Promise((resolve, reject) => {
+		QueryDB.runQueryDb(db, sql).then((result) => {
+			resolve(convertToHMS(result[0].totalTime));
+		});
+	});
+
+	return promise;
+}
+
 export function deleteGame(db, gameId) {
 	return DeleteDB.deleteFromWhereDb(db, 'Game', 'gameId', gameId);
 }
