@@ -79,22 +79,22 @@ function loadGameCategoryRunsAndRunners(gameId, categoryId) {
 			}
 
 			let tableHtml = `<tr>
-                    <th border: 1px solid;>Placement</th>
-					<th border: 1px solid;>Runner</th>
-					<th border: 1px solid;>Region</th>
-                    <th border: 1px solid;>Run Time</th>
-                    <th border: 1px solid;>Date Played</th>
-					<th border: 1px solid;>Hide Name</th>
+                    <th>Placement</th>
+					<th>Runner</th>
+					<th>Region</th>
+                    <th>Run Time</th>
+                    <th>Date Played</th>
+					<th>Hide Name</th>
                     </tr>`;
 
 			data.forEach(function ({ runId, runTime, placement, datePlayed, username, region }) {
 				tableHtml += `<tr>
-                    <td border: 1px solid;>${placement}</td>
-					<td border: 1px solid;>${username}</td>
-					<td border: 1px solid;>${region}</td>
-                    <td border: 1px solid;>${runTime}</td>
-                    <td border: 1px solid;>${datePlayed}</td>
-					<td border: 1px solid;><button onclick=\"updateUsername(\'${username}\')\">Hide</a></td>
+                    <td>${placement}</td>
+					<td>${username}</td>
+					<td>${region}</td>
+                    <td>${runTime}</td>
+                    <td>${datePlayed}</td>
+					<td><button onclick=\"updateUsername(\'${username}\')\">Hide</a></td>
                     </td>
                     </tr>`;
 			});
@@ -151,14 +151,14 @@ function loadStats(gameId, categoryId) {
 			// Game Stats
 			//
 			statsInnerHTML += `<tr>
-			<th border: 1px solid;>Category</th>
-			<th border: 1px solid;>Total Time</th>
+			<th>Game</th>
+			<th>Stats</th>
 			</tr>`;
 
 			data.category.forEach(function ({ categoryName, totalTime }) {
 				statsInnerHTML += `<tr>
-                    <td border: 1px solid;>${categoryName}</td>
-					<td border: 1px solid;>${totalTime}</td>
+                    <td>${categoryName}</td>
+					<td>${totalTime}</td>
                     </tr>`;
 			});
 

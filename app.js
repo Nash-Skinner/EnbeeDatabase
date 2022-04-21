@@ -1,5 +1,5 @@
 import express from 'express';
-import config from './config.json'; //assert{ type: "json" };
+import config from './config.json' assert{ type: "json" };
 import { initializeDatabase, useDatabase } from './initializeDatabase.js';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';

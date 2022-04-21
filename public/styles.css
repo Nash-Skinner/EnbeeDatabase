@@ -18,11 +18,13 @@ nav {
     min-height: 10vh;
     background-color: teal;
     font-family: "Montserrat", sans-serif;
+    width: 100%;
+
 }
 .nav-links {
     display: flex;
-    justify-content: space-around;
-    width: 30%;
+    justify-content: flex-end;
+    width: 30px;
 }
 .nav-links label {
 	color: white;
@@ -34,8 +36,13 @@ nav {
 }
 .nav-links .li{
     list-style: none;
+    align-content: center;
+}
+h4 {
+    align-self: start;
 }
 .heading {
+    text-align:left;
     color: white;
     text-transform: uppercase;
     letter-spacing: 5px;
@@ -60,11 +67,10 @@ nav {
     height: 100%; 
     width: 160px; 
     position: fixed;
-    top: 0;
     left: 0;
     background-color: #111; 
     overflow-x: hidden; 
-    padding-top: 7%;
+    padding-top: 16px;
 }
 .sidenav a {
     padding: 6px 8px 6px 16px;
@@ -85,8 +91,8 @@ nav {
     .sidenav a {font-size: 18px;}
 }
 table, th, td {
-    align-content: center;
     border: 1px solid;
+    align-self: auto;
 }
 th, td {
     padding-left: 4px;
@@ -98,4 +104,6 @@ th, td {
     margin-top: 1%;
     margin-left: auto;
     margin-right: auto;
+    width: 50%;
+	border:1px solid #EEEEEE;
 }
