@@ -5,6 +5,7 @@
 import { importGame } from './API Helpers/getSRDCData.js';
 import * as DeleteDB from './DBOperations/deleteOperations.js'
 import * as QueryDB from './DBOperations/queryOperations.js';
+import * as UpdateDB from './DBOperations/updateOperations.js'
 
 export function addGame(db, gameAbbrev) {
 	return importGame(db, gameAbbrev);
@@ -74,7 +75,7 @@ export function getGameCategoryRuns(db, gameId, categoryId) {
 
 export function getGameCategoryRunsAndRunners(db, gameId, categoryId) {
 	
-	let sqlSelect = `SELECT runTime, placement, datePlayed, username, region`;
+	let sqlSelect = `SELECT Run.runId, runTime, placement, datePlayed, username, region`;
 	let sqlFrom = `FROM Run, PlayedBy, Runner`
 	let sqlWhere = `WHERE Run.runId = PlayedBy.runId AND Run.gameId = PlayedBy.gameId AND Run.categoryId = PlayedBy.categoryId AND PlayedBy.userId = Runner.userId AND Run.gameId = \'${gameId}\' AND Run.categoryId = \'${categoryId}\'`;
 	let sqlOrder = `ORDER BY Run.Placement`;
@@ -118,6 +119,28 @@ export function getTotalGameTimeAll(db) {
 	return promise;
 }
 
+export function getTotalCategoryTimeAll(db, gameId) {
+
+	let sqlSelect = `SELECT categoryName, Sum(runTime) AS totalTime`;
+	let sqlFrom = `FROM Run, Category`;
+	let sqlWhere = `WHERE Run.categoryId = Category.categoryId AND Run.gameId = '${gameId}'`;
+	let sqlOrder = `GROUP BY Category.categoryId ORDER BY categoryName`;
+	
+	let sql = `${sqlSelect} ${sqlFrom} ${sqlWhere} ${sqlOrder}`;
+
+	let promise = new Promise((resolve, reject) => {
+		QueryDB.runQueryDb(db, sql).then((result) => {
+			result.forEach((game) => {
+				game.totalTime = convertToHMS(game.totalTime);
+			});
+
+			resolve(result);
+		});
+	});
+
+	return promise;
+}
+
 export function getTotalGameCategoryTime(db, gameId, categoryId) {
 
 	let sql = `SELECT SUM(runTime) AS totalTime FROM Run WHERE gameId = \'${gameId}\' AND categoryId = \'${categoryId}\'`;
@@ -131,6 +154,10 @@ export function getTotalGameCategoryTime(db, gameId, categoryId) {
 	return promise;
 }
 
-export function deleteGame(db, gameId) {
-	return DeleteDB.deleteFromWhereDb(db, 'Game', 'gameId', gameId);
+export function updateUsername(db, oldUsername, newUsername) {
+	return UpdateDB.updateWhereDb(db, 'Runner', 'username', oldUsername, newUsername);
+}
+
+export function deleteGame(db, gameAbbrev) {
+	return DeleteDB.deleteFromWhereDb(db, 'Game', 'abbrev', gameAbbrev);
 }

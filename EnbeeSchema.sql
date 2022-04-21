@@ -4,7 +4,7 @@ USE EnbeeDatabase;
 CREATE TABLE Game (
 	gameId varchar(20) NOT NULL,
 	abbrev varchar(20) NOT NULL,			
-    name varchar(20) NOT NULL,
+    name varchar(40) NOT NULL,
     releaseYear YEAR NOT NULL,
 	weblink varchar(50) NOT NULL,
     PRIMARY KEY (gameId)

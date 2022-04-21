@@ -4,5 +4,5 @@
 	"password": "",
 	"database": "EnbeeDatabase",
 	"schema": "./EnbeeSchema.sql",
-	"resetDBOnLaunch": true
+	"resetDBOnLaunch": false
 }

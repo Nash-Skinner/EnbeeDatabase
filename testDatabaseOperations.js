@@ -7,9 +7,14 @@ import * as UserOps from './userOperations.js';
 
 export function testDBOperations(db) {
 
-	UserOps.getTotalGameTimeAll(db).then((totals) => {
+	UserOps.getTotalCategoryTimeAll(db, 'yd4ljx1e').then((totals) => {
 		console.log(totals);
 	});
+
+	/*
+	UserOps.getTotalGameTimeAll(db).then((totals) => {
+		console.log(totals);
+	});*/
 
 	/*
 	UserOps.getTotalGameCategoryTime(db, 'yd4ljx1e', 'xk9g0zvd').then((time) => {

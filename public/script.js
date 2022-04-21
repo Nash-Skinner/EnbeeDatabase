@@ -1,110 +1,141 @@
+let lastGameId = "", lastCategoryId = "";
+
 document.addEventListener('DOMContentLoaded', function () {
-    fetch('http://localhost:3000/api/game')
-    .then(res => res.json())
-    .then(data => loadGames(data));
+	loadAllGames();
 });
 
-// Load Game Data into nav-bar
-function loadGames(data) {
-    const tab = document.getElementById("nav-links");
+function loadAllGames() {
+	fetch('http://localhost:3000/api/game')
+		.then(res => res.json())
+		.then(data => {
+			const tab = document.getElementById("nav-links");
 
-    if (data.length === 0) {
-        return;
-    } 
+			if (data.length === 0) {
+				return;
+			}
 
-    let tabHtml = "";
+			let tabHtml = "";
 
-    data.forEach(function ({gameId,name}){
-        tabHtml += `<li><a id=\"games\" onclick=\"loadCategory(\'${gameId}\')\">${name}</a></li>`;
-    });
-    tabHtml += `<li><a class="active" href="#gameForm" onclick=\"loadGameForm()\">New Game</a></li>`
+			data.forEach(function ({ gameId, name }) {
+				tabHtml += `<li><a id=\"games\" onclick=\"loadCategoriesForGame(\'${gameId}\')\">${name}</a></li>`;
+			});
+			tabHtml += `<li><label for="abbrev">Game Abbrev:</label><input type="text" id="abbrev" name="abbrev"></li>`;
+			tabHtml += `<li><a class="active" onclick=\"addNewGame()\">Add Game</a></li>`
+			tabHtml += `<li><a class="active" onclick=\"deleteGame()\">Delete Game</a></li>`
 
-    tab.innerHTML = tabHtml;
+			tab.innerHTML = tabHtml;
+		});
 }
 
-// GameForm to Submit Games [visble : hidden]
-function loadGameForm() {
-    var node = document.getElementById("#gameForm");
-    var visibility = node.style.visibility;
-    node.style.visibility = visibility == "visible" ? 'hidden' : "visible"
+function addNewGame() {
+	const abbrev = document.getElementById("abbrev").value;
+	fetch(`http://localhost:3000/api/newgame/${abbrev}`)
+		.then(() => loadAllGames());
+}
+
+function updateUsername(oldUsername) {
+	const newUsername = "Hidden";
+	fetch(`http://localhost:3000/api/updateusername/${oldUsername}/${newUsername}`)
+		.then(() => loadGameCategoryRunsAndRunners(lastGameId, lastCategoryId));
+}
+
+function deleteGame() {
+	const abbrev = document.getElementById("abbrev").value;
+	fetch(`http://localhost:3000/api/deletegame/${abbrev}`)
+		.then(() => loadAllGames());
 }
 
 // Get Category data for Game
-function loadCategory(gameId){
-    fetch(`http://localhost:3000/api/category/${gameId}`)
-    .then(res => res.json())
-    .then(data => loadCategories(gameId, data));
+function loadCategoriesForGame(gameId) {
+	fetch(`http://localhost:3000/api/category/${gameId}`)
+		.then(res => res.json())
+		.then(data => {
+			const option = document.getElementById("sidenav");
+
+			if (data.length === 0) {
+				return;
+			}
+
+			let optionHtml = "";
+
+			data.forEach(function ({ categoryId, categoryName }) {
+				optionHtml += `<a id=\"category\" onclick=\"loadGameCategoryRunsAndRunners(\'${gameId}\', \'${categoryId}\')\">${categoryName}</a>`;
+			});
+			option.innerHTML = optionHtml;
+		});
 };
 
-// Load Category into sidebar
-function loadCategories(gameId, data) {
-    const option = document.getElementById("sidenav");
-    
-    if (data.length === 0) {
-        return;
-    } 
+function loadGameCategoryRunsAndRunners(gameId, categoryId) {
+	lastGameId = gameId;
+	lastCategoryId = categoryId;
 
-    let optionHtml = "";
+	fetch(`http://localhost:3000/api/run/${gameId}/${categoryId}`)
+		.then(res => res.json())
+		.then(data => {
+			const table = document.getElementById("runTable");
 
-    data.forEach(function ({categoryId,categoryName}){
-        optionHtml += `<a id=\"category\" onclick=\"loadRun(\'${gameId}\', \'${categoryId}\')\">${categoryName}</a>`;
-    });
-    option.innerHTML = optionHtml;
-}
+			if (data.length === 0) {
+				return;
+			}
 
-// Get Run data for Category
-function loadRun(gameId, categoryId){
-    fetch(`http://localhost:3000/api/run/${gameId}/${categoryId}`)
-    .then(res => res.json())
-    .then(data => loadRunTable(data));
-};
-
-// Load Run data into a table
-function loadRunTable(data) {
-    const table = document.getElementById("table");
-
-	console.log(data);
-	console.log(table);
-
-    if (data.length === 0) {
-        return;
-    } 
-
-    let tableHtml = `<tr>
+			let tableHtml = `<tr>
                     <th border: 1px solid;>Placement</th>
+					<th border: 1px solid;>Runner</th>
+					<th border: 1px solid;>Region</th>
                     <th border: 1px solid;>Run Time</th>
                     <th border: 1px solid;>Date Played</th>
-                    <th border: 1px solid;>Edit</th>
-                    <th border: 1px solid;>Delete</th>
+					<th border: 1px solid;>Hide Name</th>
                     </tr>`;
 
-    data.forEach(function ({runId, runTime,placement,datePlayed}){
-        tableHtml += `<tr>
+			data.forEach(function ({ runId, runTime, placement, datePlayed, username, region }) {
+				tableHtml += `<tr>
                     <td border: 1px solid;>${placement}</td>
+					<td border: 1px solid;>${username}</td>
+					<td border: 1px solid;>${region}</td>
                     <td border: 1px solid;>${runTime}</td>
                     <td border: 1px solid;>${datePlayed}</td>
-                    <td border: 1px solid;>
-                    <button type="button" onclick="runEdit('${runId}');"class="btn btn-default">Edit</button>
-                    </td>
-                    <td border: 1px solid;>
-                    <button type="button" onclick="runDelete('${runId}');"class="btn btn-default">Delete</button>
+					<td border: 1px solid;><button onclick=\"updateUsername(\'${username}\')\">Hide</a></td>
                     </td>
                     </tr>`;
-    });
+			});
 
-    tableHtml += `</tr>`
-    
-    console.log(table);
+			tableHtml += `</tr>`
 
-    table.innerHTML = tableHtml;
+			table.innerHTML = tableHtml;
+
+			loadStats(gameId, categoryId);
+		});
 }
 
-// Edit on Run table
-function runEdit(runId){
-    console.log(runId);
-}
+function loadStats(gameId, categoryId) {
+	fetch(`http://localhost:3000/api/stats/${gameId}/${categoryId}`)
+		.then(res => res.json())
+		.then(data => {
 
-// Delete on Run table
-function runDelete(runId){
-    fetch(`http://localhost:3000/api/run/delete/${runId}`);
+			console.log(data);
+
+			const stats = document.getElementById("statsTable");
+
+			let statsInnerHTML = "";
+
+			statsInnerHTML += `<tr>
+			<th border: 1px solid;>Game</th>
+			<th border: 1px solid;>Stats</th>
+			</tr>`;
+
+			data.forEach(function ({ categoryName, totalTime }) {
+				statsInnerHTML += `<tr>
+                    <td border: 1px solid;>${categoryName}</td>
+					<td border: 1px solid;>${totalTime}</td>
+                    </tr>`;
+			});
+
+			/*
+			statsInnerHTML +=`<tr>
+			<td border: 1px solid;>${categoryName}</td>
+			<td border: 1px solid;>${totalTime}</td></tr>`*/
+
+			
+			stats.innerHTML = statsInnerHTML;
+		});
 }

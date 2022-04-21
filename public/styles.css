@@ -15,7 +15,7 @@ nav {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    min-height: 8vh;
+    min-height: 10vh;
     background-color: teal;
     font-family: "Montserrat", sans-serif;
 }
@@ -23,6 +23,14 @@ nav {
     display: flex;
     justify-content: space-around;
     width: 30%;
+}
+.nav-links label {
+	color: white;
+	font-family: "Montserrat", sans-serif;
+	font-weight: bold;
+    font-size:14px;
+    padding: 8px;
+	text-decoration: none;
 }
 .nav-links .li{
     list-style: none;
@@ -40,6 +48,7 @@ nav {
     font-weight: bold;
     font-size:14px;
     padding: 8px;
+	white-space: nowrap;
 }
 .nav-links li a:hover:not(.active) {
     background-color: lightseagreen;
