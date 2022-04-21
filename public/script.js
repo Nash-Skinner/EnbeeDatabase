@@ -114,9 +114,11 @@ function loadStats(gameId, categoryId) {
 
 			const dbStats = document.getElementById("dbTable");
 			const stats = document.getElementById("statsTable");
+			const categoryStats = document.getElementById("categoryTable");
 
 			let dbStatsInnerHTML = "";
 			let statsInnerHTML = "";
+			let categoryInnerHTML = "";
 
 			//
 			// DB Stats
@@ -163,15 +165,20 @@ function loadStats(gameId, categoryId) {
 			//
 			// Category Stats
 			//
+			categoryInnerHTML += `<tr>
+			<th border: 1px solid;>Most Popular</th>
+			<th border: 1px solid;>Regions</th>
+			</tr>`;
 
-
-
-			/*
-			statsInnerHTML +=`<tr>
-			<td border: 1px solid;>${categoryName}</td>
-			<td border: 1px solid;>${totalTime}</td></tr>`*/
+			data.regions.forEach(function ({ region, percentage }) {
+				categoryInnerHTML += `<tr>
+                    <td border: 1px solid;>${region}</td>
+					<td border: 1px solid;>${percentage}</td>
+                    </tr>`;
+			});
 
 			dbStats.innerHTML = dbStatsInnerHTML;
 			stats.innerHTML = statsInnerHTML;
+			categoryStats.innerHTML = categoryInnerHTML;
 		});
 }

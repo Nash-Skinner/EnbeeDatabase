@@ -206,6 +206,24 @@ export function getTotalCategoryTimeAll(db, gameId) {
 	return promise;
 }
 
+export function getRegionBreakdown(db, gameId, categoryId) {
+
+	let sqlSelect = `SELECT region, Count(*) * 100 / SUM(Count(*)) OVER() AS percentage`;
+	let sqlFrom = `FROM Run, PlayedBy, Runner`
+	let sqlWhere = `WHERE Run.runId = PlayedBy.runId AND Run.gameId = PlayedBy.gameId AND Run.categoryId = PlayedBy.categoryId AND PlayedBy.userId = Runner.userId AND Run.gameId = \'${gameId}\' AND Run.categoryId = \'${categoryId}\'`;
+	let sqlOrder = `GROUP BY region ORDER BY percentage DESC, region ASC LIMIT 5`;
+
+	let sql = `${sqlSelect} ${sqlFrom} ${sqlWhere} ${sqlOrder}`;
+
+	let promise = new Promise((resolve, reject) => {
+		QueryDB.runQueryDb(db, sql).then((result) => {
+			resolve(result);
+		});
+	});
+
+	return promise;
+}
+
 export function getTotalGameCategoryTime(db, gameId, categoryId) {
 
 	let sql = `SELECT SUM(runTime) AS totalTime FROM Run WHERE gameId = \'${gameId}\' AND categoryId = \'${categoryId}\'`;

@@ -69,15 +69,18 @@ app
 			UserOps.getRunnersWithMoreThanRuns(db, 5).then((runners) => {
 				UserOps.getSlowestRun(db).then((slowest) => {
 					UserOps.getFastestRun(db).then((fastest) => {
-						let dataPackage = {
-							category: data,
-							runners: runners,
-							extreme: []
-						};
-						dataPackage.extreme.push(fastest[0]);
-						dataPackage.extreme.push(slowest[0]);
-
-						res.json(dataPackage);
+						UserOps.getRegionBreakdown(db, req.params.gameId, req.params.categoryId).then((regions) => {
+							let dataPackage = {
+								category: data,
+								runners: runners,
+								extreme: [],
+								regions: regions
+							};
+							dataPackage.extreme.push(fastest[0]);
+							dataPackage.extreme.push(slowest[0]);
+	
+							res.json(dataPackage);
+						});
 					});
 				});
 			});
