@@ -87,7 +87,6 @@ export function getGameCategoryRunsAndRunners(db, gameId, categoryId) {
 
 			result.forEach((playerRun) => {
 				playerRun.runTime = convertToHMS(playerRun.runTime);
-<<<<<<< Updated upstream
 
 				if(!Number.isNaN(new Date(playerRun.datePlayed).getDate())) {
 					playerRun.datePlayed = new Date(playerRun.datePlayed).toISOString().split('T')[0];
@@ -95,14 +94,6 @@ export function getGameCategoryRunsAndRunners(db, gameId, categoryId) {
 				else {
 					playerRun.datePlayed = "Unknown";
 				}
-=======
-				if (!Number.isNaN(new Date(playerRun.datePlayed).getDate())){
-					playerRun.datePlayed = new Date(playerRun.datePlayed).toISOString().split('T')[0];
-				} else {
-					playerRun.datePlayed = 'Unknown';
-				}
-				
->>>>>>> Stashed changes
 			});
 
 			resolve(result);
