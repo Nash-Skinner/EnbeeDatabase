@@ -8,13 +8,11 @@ import Game from './constructors/game.js';
 import cors from 'cors';
 
 import { testDBOperations } from './testDatabaseOperations.js';
-import { response } from 'express';
+import * as UserOps from './userOperations.js';
 
 const db = mysql.createConnection({host: config.host, user: config.user, password: config.password});
 initializeDatabase(db, config).then(() => {
-	useDatabase(db, config.database).then(() => {
-		testDBOperations(db); 
-	});
+	testDBOperations(db);
 });
 const app = express()
 const port = process.env.PORT || 3000;
@@ -31,9 +29,9 @@ app
 
     // Get Games Table
     .get('/api/game', (req,res) => {
-        db.query("SELECT * FROM game ORDER BY name", (err, data) => {
-            res.json(data);
-        });
+		UserOps.getAllGames(db).then((games) => {
+			res.json(games);
+		});
     })
 
     // Post to Game Table
@@ -47,16 +45,16 @@ app
 
     // Get Category Table
     .get('/api/category/:id', (req,res) => {
-        db.query(`SELECT * FROM category WHERE gameId = \'${req.params.id}\' ORDER BY categoryName`, (err, data) => {
-            res.json(data);
-        });
+		UserOps.getGameCategories(db, req.params.id).then((categories) => {
+			res.json(categories);
+		});
     })
 
     // Get Run Table
-    .get('/api/run/:id', (req,res) => {
-        db.query(`SELECT * FROM run WHERE categoryId = \'${req.params.id}\' ORDER BY placement`, (err, data) => {
-            res.json(data);
-        });
+    .get('/api/run/:gameId/:categoryId', (req,res) => {
+		UserOps.getGameCategoryRuns(db, req.params.gameId, req.params.categoryId).then((runs) => {
+			res.json(runs);
+		});
     })
 
     .listen(port, () => console.log(`Server Started on port ${port}`));

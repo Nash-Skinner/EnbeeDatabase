@@ -33,11 +33,11 @@ function loadGameForm() {
 function loadCategory(gameId){
     fetch(`http://localhost:3000/api/category/${gameId}`)
     .then(res => res.json())
-    .then(data => loadCategories(data));
+    .then(data => loadCategories(gameId, data));
 };
 
 // Load Category into sidebar
-function loadCategories(data) {
+function loadCategories(gameId, data) {
     const option = document.getElementById("sidenav");
     
     if (data.length === 0) {
@@ -47,14 +47,14 @@ function loadCategories(data) {
     let optionHtml = "";
 
     data.forEach(function ({categoryId,categoryName}){
-        optionHtml += `<a id=\"category\" onclick=\"loadRun(\'${categoryId}\')\">${categoryName}</a>`;
+        optionHtml += `<a id=\"category\" onclick=\"loadRun(\'${gameId}\', \'${categoryId}\')\">${categoryName}</a>`;
     });
     option.innerHTML = optionHtml;
 }
 
 // Get Run data for Category
-function loadRun(categoryId){
-    fetch(`http://localhost:3000/api/run/${categoryId}`)
+function loadRun(gameId, categoryId){
+    fetch(`http://localhost:3000/api/run/${gameId}/${categoryId}`)
     .then(res => res.json())
     .then(data => loadRunTable(data));
 };
@@ -63,6 +63,9 @@ function loadRun(categoryId){
 function loadRunTable(data) {
     const table = document.getElementById("table");
 
+	console.log(data);
+	console.log(table);
+
     if (data.length === 0) {
         return;
     } 
@@ -70,11 +73,11 @@ function loadRunTable(data) {
     let tableHtml = "";
 
     data.forEach(function ({runTime,placement,datePlayed}){
-        tableHtml += `<td border: 1px solid;></td>`;
+        tableHtml += `<td border: 1px solid;>${runTime}</td>`;
     });
 
     console.log(tableHtml.innerHTML);
 
-    table.outerHTML = `<th border: 1px solid;>runTime</th><th border: 1px solid;>placement</th><th border: 1px solid;>datePlayed</th>`
+    //table.outerHTML = `<th border: 1px solid;>runTime</th><th border: 1px solid;>placement</th><th border: 1px solid;>datePlayed</th>`;
     table.innerHTML = tableHtml;
 }

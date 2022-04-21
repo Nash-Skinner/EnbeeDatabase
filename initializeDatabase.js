@@ -5,6 +5,7 @@
  */
 
 import Importer from 'mysql-import';
+import { importGame } from './API Helpers/getSRDCData.js';
 
 function connectDb(db) {
 
@@ -19,7 +20,7 @@ function connectDb(db) {
 }
 
 function resetDBOnLaunch(db, config) {
-	
+
 	let promise = new Promise((resolve, reject) => {
 		if (config.resetDBOnLaunch) {
 			let sql = `DROP DATABASE IF EXISTS ${config.database}`;
@@ -28,6 +29,9 @@ function resetDBOnLaunch(db, config) {
 				resolve(`Dropped database ${config.database}.`);
 			});
 		}
+		else {
+			resolve(`Did not reset Database.`);
+		}
 	});
 
 	return promise;
@@ -35,7 +39,7 @@ function resetDBOnLaunch(db, config) {
 
 function importSchema(db, config) {
 	const importer = new Importer({ host: config.host, user: config.user, password: config.password });
-	
+
 	let promise = new Promise((resolve, reject) => {
 		importer.import(config.schema).then(() => {
 			var files_imported = importer.getImported();
@@ -50,13 +54,23 @@ function importSchema(db, config) {
 	return promise;
 }
 
+function addInitialData(db) {
+	let promises = [];
+
+	promises.push(importGame(db, 'crosscode'));
+	promises.push(importGame(db, 'ahit'));
+	promises.push(importGame(db, 'ash'));
+
+	return Promise.all(promises);
+}
+
 /**
  * Initializes the database from a MySQL Connection
  * 
  * @param config Configuration settings {host, user, password, database, resetDBOnLaunch}
  */
 export function initializeDatabase(db, config) {
-	
+
 	let promise = new Promise((resolve, reject) => {
 		try {
 			connectDb(db).then((result) => {
@@ -66,7 +80,21 @@ export function initializeDatabase(db, config) {
 					console.log(result);
 
 					importSchema(db, config).then((db) => {
-						resolve(db);
+						useDatabase(db, config.database).then(() => {
+
+							if (config.resetDBOnLaunch) {
+								addInitialData(db).then(() => {
+									resolve(db);
+								}).catch((err) => {
+									console.log(err);
+									resolve(db);
+								});
+							}
+							else {
+								resolve(db);
+							}
+
+						});
 					});
 				});
 			});

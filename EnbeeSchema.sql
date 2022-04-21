@@ -52,7 +52,7 @@ CREATE TABLE Run (
 	runId varchar(20) NOT NULL,
 	gameId varchar(20) NOT NULL,
 	categoryId varchar(20) NOT NULL,
-	runTime TIME NOT NULL,
+	runTime varchar(30) NOT NULL,
 	placement int NULL,
 	datePlayed DATE NULL,
     PRIMARY KEY (runId, gameId, categoryId),

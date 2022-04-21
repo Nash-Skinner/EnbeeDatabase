@@ -13,63 +13,70 @@ export function importGame(db, gameAbbrev) {
 
 	console.log(`Importing Game with Abbreviation: ${gameAbbrev}`);
 
-	getGameAndCategoryInfo(gameAbbrev).then((gameCatInfo) => {
-		let Games = new Game(gameCatInfo.id, gameCatInfo.abbreviation, gameCatInfo.names.international, gameCatInfo.released, gameCatInfo.weblink);
-		console.log(`Found Game: ${Games.name}`);
-		let Categories = [], Variables = [], Runs = [], RunHasVariables = [], PlayedBys = [], Runners = [];
+	let promise = new Promise((resolve, reject) => {
 
-		parseCategoriesAndVariables(gameCatInfo, Categories, Variables);
-		const LeaderboardPromises = [];
+		getGameAndCategoryInfo(gameAbbrev).then((gameCatInfo) => {
+			let Games = new Game(gameCatInfo.id, gameCatInfo.abbreviation, gameCatInfo.names.international, gameCatInfo.released, gameCatInfo.weblink);
+			console.log(`Found Game: ${Games.name}`);
+			let Categories = [], Variables = [], Runs = [], RunHasVariables = [], PlayedBys = [], Runners = [];
 
-		console.log(`Beginning Importing ${Categories.length} Categories`);
+			parseCategoriesAndVariables(gameCatInfo, Categories, Variables);
+			const LeaderboardPromises = [];
 
-		for (let i = 0; i < Categories.length; i++) {
-			let leaderboardPromise = grabLeaderboard(Categories[i].gameId, Categories[i].categoryId, Runs, RunHasVariables, PlayedBys, Runners);
-			leaderboardPromise.then(() => {
-				console.log(`Finished Importing ${Categories[i].categoryName}`);
-			}).catch((error) => {
-				console.log(`Error Importing ${Categories[i].categoryName}: ${error}`);
-			});
-			LeaderboardPromises.push(leaderboardPromise);
-		}
+			console.log(`Beginning Importing ${Categories.length} Categories`);
 
-		Promise.all(LeaderboardPromises).then(() => {
-			console.log(`Finished Importing ${Games.name}: ${Categories.length} Categories, ${Variables.length} Variables, ${Runs.length} Runs, ${RunHasVariables.length} RunHasVariables, ${Runners.length} Runners, ${PlayedBys.length} PlayedBys`);
+			for (let i = 0; i < Categories.length; i++) {
+				let leaderboardPromise = grabLeaderboard(Categories[i].gameId, Categories[i].categoryId, Runs, RunHasVariables, PlayedBys, Runners);
+				leaderboardPromise.then(() => {
+					console.log(`Finished Importing ${Categories[i].categoryName}`);
+				}).catch((error) => {
+					console.log(`Error Importing ${Categories[i].categoryName}: ${error}`);
+				});
+				LeaderboardPromises.push(leaderboardPromise);
+			}
 
-			InsertDB.insertDb(db, Games, true).then(() => {
+			Promise.all(LeaderboardPromises).then(() => {
+				console.log(`Finished Importing ${Games.name}: ${Categories.length} Categories, ${Variables.length} Variables, ${Runs.length} Runs, ${RunHasVariables.length} RunHasVariables, ${Runners.length} Runners, ${PlayedBys.length} PlayedBys`);
 
-				console.log(`Inserted Game: ${Games.name}`);
-				InsertDB.insertArrayDb(db, Categories, true).then(() => {
+				InsertDB.insertDb(db, Games, true).then(() => {
 
-					console.log(`Inserted ${Categories.length} Categories`);
-					InsertDB.insertArrayDb(db, Variables, true).then(() => {
+					console.log(`Inserted Game: ${Games.name}`);
+					InsertDB.insertArrayDb(db, Categories, true).then(() => {
 
-						console.log(`Inserted ${Variables.length} Variables`);
-						InsertDB.insertArrayDb(db, Runs, true).then(() => {
+						console.log(`Inserted ${Categories.length} Categories`);
+						InsertDB.insertArrayDb(db, Variables, true).then(() => {
 
-							console.log(`Inserted ${Runs.length} Runs`);
-							InsertDB.insertArrayDb(db, RunHasVariables, true).then(() => {
+							console.log(`Inserted ${Variables.length} Variables`);
+							InsertDB.insertArrayDb(db, Runs, true).then(() => {
 
-								console.log(`Inserted ${RunHasVariables.length} RunHasVariables`);
-								InsertDB.insertArrayDb(db, Runners, true).then(() => {
+								console.log(`Inserted ${Runs.length} Runs`);
+								InsertDB.insertArrayDb(db, RunHasVariables, true).then(() => {
 
-									console.log(`Inserted ${Runners.length} Runners`);
-									InsertDB.insertArrayDb(db, PlayedBys, true).then(() => {
+									console.log(`Inserted ${RunHasVariables.length} RunHasVariables`);
+									InsertDB.insertArrayDb(db, Runners, true).then(() => {
 
-										console.log(`Inserted ${PlayedBys.length} PlayedBys`);
-										console.log(`Added to Database: ${Games.name}`);
+										console.log(`Inserted ${Runners.length} Runners`);
+										InsertDB.insertArrayDb(db, PlayedBys, true).then(() => {
+
+											console.log(`Inserted ${PlayedBys.length} PlayedBys`);
+											console.log(`Added to Database: ${Games.name}`);
+											resolve();
+										});
 									});
 								});
 							});
 						});
 					});
 				});
-			});
 
-		}).catch((error) => {
-			console.log(error);
+			}).catch((error) => {
+				console.log(error);
+			});
 		});
+
 	});
+
+	return promise;
 }
 
 /**
@@ -130,9 +137,9 @@ function parseLeaderboardRunsAndRunners(leaderboard, Runs, RunHasVariables, Play
 
 	for (let i = 0; i < leaderboard.runs.length; i++) {
 		let run = leaderboard.runs[i].run;
-		let runObj = new Run(run.id, run.game, run.category, run.times.primary, leaderboard.runs[i].place, run.date);
+		let runObj = new Run(run.id, run.game, run.category, run.times.primary_t, leaderboard.runs[i].place, run.date);
 
-		for(let k in run.values) {
+		for (let k in run.values) {
 			let runHasVariableObj = new RunHasVariable(run.id, run.game, run.category, k, run.values[k]);
 			RunHasVariables.push(runHasVariableObj);
 		}
