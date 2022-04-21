@@ -18,7 +18,6 @@ nav {
     min-height: 8vh;
     background-color: teal;
     font-family: "Montserrat", sans-serif;
-    z-index: 100 !important;
 }
 .nav-links {
     display: flex;
@@ -57,7 +56,6 @@ nav {
     background-color: #111; 
     overflow-x: hidden; 
     padding-top: 7%;
-    z-index: 2 !important;
 }
 .sidenav a {
     padding: 6px 8px 6px 16px;
@@ -78,5 +76,17 @@ nav {
     .sidenav a {font-size: 18px;}
 }
 table, th, td {
+    align-content: center;
     border: 1px solid;
-  }
+}
+th, td {
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+.table {
+    margin-top: 1%;
+    margin-left: auto;
+    margin-right: auto;
+}

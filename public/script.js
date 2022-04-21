@@ -70,14 +70,41 @@ function loadRunTable(data) {
         return;
     } 
 
-    let tableHtml = "";
+    let tableHtml = `<tr>
+                    <th border: 1px solid;>Placement</th>
+                    <th border: 1px solid;>Run Time</th>
+                    <th border: 1px solid;>Date Played</th>
+                    <th border: 1px solid;>Edit</th>
+                    <th border: 1px solid;>Delete</th>
+                    </tr>`;
 
-    data.forEach(function ({runTime,placement,datePlayed}){
-        tableHtml += `<td border: 1px solid;>${runTime}</td>`;
+    data.forEach(function ({runId, runTime,placement,datePlayed}){
+        tableHtml += `<tr>
+                    <td border: 1px solid;>${placement}</td>
+                    <td border: 1px solid;>${runTime}</td>
+                    <td border: 1px solid;>${datePlayed}</td>
+                    <td border: 1px solid;>
+                    <button type="button" onclick="runEdit('${runId}');"class="btn btn-default">Edit</button>
+                    </td>
+                    <td border: 1px solid;>
+                    <button type="button" onclick="runDelete('${runId}');"class="btn btn-default">Delete</button>
+                    </td>
+                    </tr>`;
     });
 
-    console.log(tableHtml.innerHTML);
+    tableHtml += `</tr>`
+    
+    console.log(table);
 
-    //table.outerHTML = `<th border: 1px solid;>runTime</th><th border: 1px solid;>placement</th><th border: 1px solid;>datePlayed</th>`;
     table.innerHTML = tableHtml;
+}
+
+// Edit on Run table
+function runEdit(runId){
+    console.log(runId);
+}
+
+// Delete on Run table
+function runDelete(runId){
+    fetch(`http://localhost:3000/api/run/delete/${runId}`);
 }

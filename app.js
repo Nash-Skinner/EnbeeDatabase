@@ -57,4 +57,11 @@ app
 		});
     })
 
+    // Delete Run from Table
+    .post('/api/run/:id', (req,res) => {
+        db.query(`DELETE FROM run WHERE runId = \'${req.params.id}\'`, (err, data) => {
+            res.redirect('..')
+        });
+    })
+
     .listen(port, () => console.log(`Server Started on port ${port}`));
