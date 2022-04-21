@@ -133,6 +133,18 @@ function loadStats(gameId, categoryId) {
                     </tr>`;
 			});
 
+			dbStatsInnerHTML += `<tr>
+			<th border: 1px solid;>Extreme</th>
+			<th border: 1px solid;>Times</th>
+			</tr>`;
+
+			data.extreme.forEach(function ({ username, runTime }) {
+				dbStatsInnerHTML += `<tr>
+                    <td border: 1px solid;>${username}</td>
+					<td border: 1px solid;>${runTime}</td>
+                    </tr>`;
+			});
+
 			//
 			// Game Stats
 			//

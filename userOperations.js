@@ -130,8 +130,51 @@ export function getRunnersWithMoreThanRuns(db, numRuns) {
 
 	let promise = new Promise((resolve, reject) => {
 		QueryDB.runQueryDb(db, sql).then((result) => {
+			resolve(result);
+		});
+	});
+
+	return promise;
+}
+
+export function getSlowestRun(db) {
+
+	
+	let sqlSelect = `SELECT username, runTime`;
+	let sqlFrom = `FROM Run, PlayedBy, Runner`;
+	let sqlWhere = `WHERE Run.runId = PlayedBy.runId AND Run.gameId = PlayedBy.gameId AND Run.categoryId = PlayedBy.categoryId AND PlayedBy.userId = Runner.userId AND CAST(runTime AS INT) >= (SELECT MAX(CAST(runTime AS INT)) FROM Run)`;
+	let sqlOrder = ``;
+	
+	let sql = `${sqlSelect} ${sqlFrom} ${sqlWhere} ${sqlOrder}`;
+
+	let promise = new Promise((resolve, reject) => {
+		QueryDB.runQueryDb(db, sql).then((result) => {
+
 			result.forEach((game) => {
-				game.totalTime = convertToHMS(game.totalTime);
+				game.runTime = convertToHMS(game.runTime);
+			});
+
+			resolve(result);
+		});
+	});
+
+	return promise;
+}
+
+export function getFastestRun(db) {
+
+	let sqlSelect = `SELECT username, runTime`;
+	let sqlFrom = `FROM Run, PlayedBy, Runner`;
+	let sqlWhere = `WHERE Run.runId = PlayedBy.runId AND Run.gameId = PlayedBy.gameId AND Run.categoryId = PlayedBy.categoryId AND PlayedBy.userId = Runner.userId AND CAST(runTime AS INT) <= (SELECT MIN(CAST(runTime AS INT)) FROM Run)`;
+	let sqlOrder = ``;
+	
+	let sql = `${sqlSelect} ${sqlFrom} ${sqlWhere} ${sqlOrder}`;
+
+	let promise = new Promise((resolve, reject) => {
+		QueryDB.runQueryDb(db, sql).then((result) => {
+
+			result.forEach((game) => {
+				game.runTime = convertToHMS(game.runTime);
 			});
 
 			resolve(result);

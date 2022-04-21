@@ -67,14 +67,19 @@ app
 	.get('/api/stats/:gameId/:categoryId', (req,res) => {
 		UserOps.getTotalCategoryTimeAll(db, req.params.gameId).then((data) => {
 			UserOps.getRunnersWithMoreThanRuns(db, 5).then((runners) => {
+				UserOps.getSlowestRun(db).then((slowest) => {
+					UserOps.getFastestRun(db).then((fastest) => {
+						let dataPackage = {
+							category: data,
+							runners: runners,
+							extreme: []
+						};
+						dataPackage.extreme.push(fastest[0]);
+						dataPackage.extreme.push(slowest[0]);
 
-				let dataPackage = {
-					category: data,
-					runners: runners
-				}
-				
-				res.json(dataPackage);
-
+						res.json(dataPackage);
+					});
+				});
 			});
 		});
 	})

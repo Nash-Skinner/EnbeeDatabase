@@ -7,6 +7,14 @@ import * as UserOps from './userOperations.js';
 
 export function testDBOperations(db) {
 
+	UserOps.getFastestRun(db).then((runs) => {
+		console.log(runs);
+	});
+
+	UserOps.getSlowestRun(db).then((runs) => {
+		console.log(runs);
+	});
+
 	UserOps.getRunnersWithMoreThanRuns(db, 5).then((runner) => {
 		console.log(JSON.stringify(runner, undefined, 2));
 	});
