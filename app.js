@@ -1,5 +1,5 @@
 import express from 'express';
-import config from './config.json'; //assert{ type: "json" };
+import config from './config.json' assert{ type: "json" };
 import { initializeDatabase, useDatabase } from './initializeDatabase.js';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
@@ -58,9 +58,9 @@ app
     })
 
     // Delete Run from Table
-    .post('/api/run/:id', (req,res) => {
+    .post('/api/run/delete/:id', (req,res) => {
         db.query(`DELETE FROM run WHERE runId = \'${req.params.id}\'`, (err, data) => {
-            res.redirect('..')
+                if(err) throw err;
         });
     })
 
