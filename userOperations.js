@@ -3,10 +3,11 @@
  */
 
 import { importGame } from './API Helpers/getSRDCData.js';
+import * as DeleteDB from './DBOperations/deleteOperations.js'
 import * as QueryDB from './DBOperations/queryOperations.js';
 
 export function addGame(db, gameAbbrev) {
-	importGame(db, gameAbbrev);
+	return importGame(db, gameAbbrev);
 }
 
 export function getAllGames(db) {
@@ -49,14 +50,6 @@ function convertToHMS(runTime) {
 
 	let milliseconds = Math.floor(time * 1000);
 
-	if(milliseconds < 100) {
-		milliseconds = "0" + milliseconds;
-	}
-
-	if(milliseconds < 10) {
-		milliseconds = "0" + milliseconds;
-	}
-
 	return `${hours}h ${appendZeros(minutes)}m ${appendZeros(seconds)}s ${appendZeros(milliseconds)}ms`;
 }
 
@@ -77,4 +70,67 @@ export function getGameCategoryRuns(db, gameId, categoryId) {
 	});
 
 	return promise;
+}
+
+export function getGameCategoryRunsAndRunners(db, gameId, categoryId) {
+	
+	let sqlSelect = `SELECT runTime, placement, datePlayed, username, region`;
+	let sqlFrom = `FROM Run, PlayedBy, Runner`
+	let sqlWhere = `WHERE Run.runId = PlayedBy.runId AND Run.gameId = PlayedBy.gameId AND Run.categoryId = PlayedBy.categoryId AND PlayedBy.userId = Runner.userId AND Run.gameId = \'${gameId}\' AND Run.categoryId = \'${categoryId}\'`;
+	let sqlOrder = `ORDER BY Run.Placement`;
+
+	let sql = `${sqlSelect} ${sqlFrom} ${sqlWhere} ${sqlOrder}`;
+
+	let promise = new Promise((resolve, reject) => {
+		QueryDB.runQueryDb(db, sql).then((result) => {
+
+			result.forEach((playerRun) => {
+				playerRun.runTime = convertToHMS(playerRun.runTime);
+				playerRun.datePlayed = new Date(playerRun.datePlayed).toISOString().split('T')[0];
+			});
+
+			resolve(result);
+		});
+	});
+
+	return promise;
+}
+
+export function getTotalGameTimeAll(db) {
+
+	let sqlSelect = `SELECT name, Sum(runTime) AS totalTime`;
+	let sqlFrom = `FROM Run, Game`;
+	let sqlWhere = `WHERE Run.gameId = Game.gameId`;
+	let sqlOrder = `GROUP BY Run.gameId ORDER BY totalTime`;
+	
+	let sql = `${sqlSelect} ${sqlFrom} ${sqlWhere} ${sqlOrder}`;
+
+	let promise = new Promise((resolve, reject) => {
+		QueryDB.runQueryDb(db, sql).then((result) => {
+			result.forEach((game) => {
+				game.totalTime = convertToHMS(game.totalTime);
+			});
+
+			resolve(result);
+		});
+	});
+
+	return promise;
+}
+
+export function getTotalGameCategoryTime(db, gameId, categoryId) {
+
+	let sql = `SELECT SUM(runTime) AS totalTime FROM Run WHERE gameId = \'${gameId}\' AND categoryId = \'${categoryId}\'`;
+
+	let promise = new Promise((resolve, reject) => {
+		QueryDB.runQueryDb(db, sql).then((result) => {
+			resolve(convertToHMS(result[0].totalTime));
+		});
+	});
+
+	return promise;
+}
+
+export function deleteGame(db, gameId) {
+	return DeleteDB.deleteFromWhereDb(db, 'Game', 'gameId', gameId);
 }

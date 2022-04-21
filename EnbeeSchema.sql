@@ -26,7 +26,7 @@ CREATE TABLE Category (
 	categoryId varchar(20) NOT NULL,
     categoryName varchar(50) NULL,
     PRIMARY KEY (gameId, categoryId),
-    FOREIGN KEY (gameId) REFERENCES Game(gameId)
+    FOREIGN KEY (gameId) REFERENCES Game(gameId) ON DELETE CASCADE
 );
 
 CREATE TABLE Variable (
@@ -37,7 +37,7 @@ CREATE TABLE Variable (
 	variableName varchar(100) NULL,
 	variableValue varchar(100) NULL,
 	PRIMARY KEY (gameId, categoryId, variableId, variableValueId),
-	FOREIGN KEY (gameId, categoryId) REFERENCES Category(gameId, categoryId)
+	FOREIGN KEY (gameId, categoryId) REFERENCES Category(gameId, categoryId) ON DELETE CASCADE
 );
 
 CREATE TABLE Runner (
@@ -56,7 +56,7 @@ CREATE TABLE Run (
 	placement int NULL,
 	datePlayed DATE NULL,
     PRIMARY KEY (runId, gameId, categoryId),
-    FOREIGN KEY (gameId, categoryId) REFERENCES Category(gameId, categoryId)
+    FOREIGN KEY (gameId, categoryId) REFERENCES Category(gameId, categoryId) ON DELETE CASCADE
 );
 
 CREATE TABLE RunHasVariable (
@@ -66,8 +66,8 @@ CREATE TABLE RunHasVariable (
 	variableId varchar(20) NOT NULL,
 	variableValueId varchar(20) NOT NULL,
 	PRIMARY KEY (runId, gameId, categoryId, variableId, variableValueId),
-	FOREIGN KEY (runId, gameId, categoryId) REFERENCES Run(runId, gameId, categoryId),
-	FOREIGN KEY (gameId, categoryId, variableId, variableValueId) REFERENCES Variable(gameId, categoryId, variableId, variableValueId)
+	FOREIGN KEY (runId, gameId, categoryId) REFERENCES Run(runId, gameId, categoryId) ON DELETE CASCADE,
+	FOREIGN KEY (gameId, categoryId, variableId, variableValueId) REFERENCES Variable(gameId, categoryId, variableId, variableValueId) ON DELETE CASCADE
 );
     
 CREATE TABLE PlayedBy (
@@ -76,8 +76,8 @@ CREATE TABLE PlayedBy (
 	categoryId varchar(20) NOT NULL,
 	userId varchar(20) NOT NULL,
 	PRIMARY KEY (runId, gameId, categoryId, userId),
-	FOREIGN KEY (runId, gameId, categoryId) REFERENCES Run(runId, gameId, categoryId),
-	FOREIGN KEY (userId) REFERENCES Runner(userId)
+	FOREIGN KEY (runId, gameId, categoryId) REFERENCES Run(runId, gameId, categoryId) ON DELETE CASCADE,
+	FOREIGN KEY (userId) REFERENCES Runner(userId) ON UPDATE CASCADE
 );
                 
                 
