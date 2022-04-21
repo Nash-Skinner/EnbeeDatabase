@@ -1,10 +1,11 @@
 import express from 'express';
-import config from './config.json' assert{ type: "json" };
+import config from './config.json'; //assert{ type: "json" };
 import { initializeDatabase, useDatabase } from './initializeDatabase.js';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import mysql from 'mysql';
 import Game from './constructors/game.js';
+import cors from 'cors';
 
 import { testDBOperations } from './testDatabaseOperations.js';
 import { response } from 'express';
@@ -17,6 +18,8 @@ initializeDatabase(db, config).then(() => {
 });
 const app = express()
 const port = process.env.PORT || 3000;
+
+app.use(cors());
 
 app
     .use(morgan('dev'))
