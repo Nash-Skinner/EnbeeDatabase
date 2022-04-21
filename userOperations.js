@@ -119,6 +119,28 @@ export function getTotalGameTimeAll(db) {
 	return promise;
 }
 
+export function getRunnersWithMoreThanRuns(db, numRuns) {
+
+	let sqlSelect = `SELECT username, Count(*) AS totalRuns`;
+	let sqlFrom = `FROM Runner, PlayedBy, Run`;
+	let sqlWhere = `WHERE Run.runId = PlayedBy.runId AND Run.gameId = PlayedBy.gameId AND Run.categoryId = PlayedBy.categoryId AND PlayedBy.userId = Runner.userId`;
+	let sqlOrder = `GROUP BY username HAVING Count(*) > ${numRuns} ORDER BY Count(*) DESC LIMIT 5`;
+	
+	let sql = `${sqlSelect} ${sqlFrom} ${sqlWhere} ${sqlOrder}`;
+
+	let promise = new Promise((resolve, reject) => {
+		QueryDB.runQueryDb(db, sql).then((result) => {
+			result.forEach((game) => {
+				game.totalTime = convertToHMS(game.totalTime);
+			});
+
+			resolve(result);
+		});
+	});
+
+	return promise;
+}
+
 export function getTotalCategoryTimeAll(db, gameId) {
 
 	let sqlSelect = `SELECT categoryName, Sum(runTime) AS totalTime`;

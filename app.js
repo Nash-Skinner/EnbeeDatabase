@@ -66,7 +66,16 @@ app
 
 	.get('/api/stats/:gameId/:categoryId', (req,res) => {
 		UserOps.getTotalCategoryTimeAll(db, req.params.gameId).then((data) => {
-			res.json(data);
+			UserOps.getRunnersWithMoreThanRuns(db, 5).then((runners) => {
+
+				let dataPackage = {
+					category: data,
+					runners: runners
+				}
+				
+				res.json(dataPackage);
+
+			});
 		});
 	})
 

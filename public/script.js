@@ -112,30 +112,54 @@ function loadStats(gameId, categoryId) {
 		.then(res => res.json())
 		.then(data => {
 
-			console.log(data);
-
+			const dbStats = document.getElementById("dbTable");
 			const stats = document.getElementById("statsTable");
 
+			let dbStatsInnerHTML = "";
 			let statsInnerHTML = "";
 
-			statsInnerHTML += `<tr>
-			<th border: 1px solid;>Game</th>
-			<th border: 1px solid;>Stats</th>
+			//
+			// DB Stats
+			//
+			dbStatsInnerHTML += `<tr>
+			<th border: 1px solid;>Runners With</th>
+			<th border: 1px solid;>Most Runs</th>
 			</tr>`;
 
-			data.forEach(function ({ categoryName, totalTime }) {
+			data.runners.forEach(function ({ username, totalRuns }) {
+				dbStatsInnerHTML += `<tr>
+                    <td border: 1px solid;>${username}</td>
+					<td border: 1px solid;>${totalRuns}</td>
+                    </tr>`;
+			});
+
+			//
+			// Game Stats
+			//
+			statsInnerHTML += `<tr>
+			<th border: 1px solid;>Category</th>
+			<th border: 1px solid;>Total Time</th>
+			</tr>`;
+
+			data.category.forEach(function ({ categoryName, totalTime }) {
 				statsInnerHTML += `<tr>
                     <td border: 1px solid;>${categoryName}</td>
 					<td border: 1px solid;>${totalTime}</td>
                     </tr>`;
 			});
 
+			//
+			// Category Stats
+			//
+
+
+
 			/*
 			statsInnerHTML +=`<tr>
 			<td border: 1px solid;>${categoryName}</td>
 			<td border: 1px solid;>${totalTime}</td></tr>`*/
 
-			
+			dbStats.innerHTML = dbStatsInnerHTML;
 			stats.innerHTML = statsInnerHTML;
 		});
 }

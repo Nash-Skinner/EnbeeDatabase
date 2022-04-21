@@ -7,8 +7,8 @@ import * as UserOps from './userOperations.js';
 
 export function testDBOperations(db) {
 
-	UserOps.getTotalCategoryTimeAll(db, 'yd4ljx1e').then((totals) => {
-		console.log(totals);
+	UserOps.getRunnersWithMoreThanRuns(db, 5).then((runner) => {
+		console.log(JSON.stringify(runner, undefined, 2));
 	});
 
 	/*
