@@ -40,8 +40,12 @@ export function insertDb(db, data, ignoreDuplicates = false) {
  * @returns Promise for when all objects have been inserted
  */
  export function insertArrayDb(db, arrayData, ignoreDuplicates = false) {
-
 	let promise = new Promise((resolve, reject) => {
+
+		if(arrayData.length == 0) {
+			resolve();
+			return;
+		}
 
 		let sql = `INSERT `+ ((ignoreDuplicates) ? `IGNORE ` : ``) +`INTO `;
 

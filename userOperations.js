@@ -87,7 +87,13 @@ export function getGameCategoryRunsAndRunners(db, gameId, categoryId) {
 
 			result.forEach((playerRun) => {
 				playerRun.runTime = convertToHMS(playerRun.runTime);
-				playerRun.datePlayed = new Date(playerRun.datePlayed).toISOString().split('T')[0];
+
+				if(!Number.isNaN(new Date(playerRun.datePlayed).getDate())) {
+					playerRun.datePlayed = new Date(playerRun.datePlayed).toISOString().split('T')[0];
+				}
+				else {
+					playerRun.datePlayed = "Unknown";
+				}
 			});
 
 			resolve(result);
@@ -124,7 +130,7 @@ export function getRunnersWithMoreThanRuns(db, numRuns) {
 	let sqlSelect = `SELECT username, Count(*) AS totalRuns`;
 	let sqlFrom = `FROM Runner, PlayedBy, Run`;
 	let sqlWhere = `WHERE Run.runId = PlayedBy.runId AND Run.gameId = PlayedBy.gameId AND Run.categoryId = PlayedBy.categoryId AND PlayedBy.userId = Runner.userId`;
-	let sqlOrder = `GROUP BY username HAVING Count(*) > ${numRuns} ORDER BY Count(*) DESC LIMIT 5`;
+	let sqlOrder = `GROUP BY username ORDER BY Count(*) DESC LIMIT ${numRuns}`;
 	
 	let sql = `${sqlSelect} ${sqlFrom} ${sqlWhere} ${sqlOrder}`;
 
