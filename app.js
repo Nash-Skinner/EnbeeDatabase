@@ -1,6 +1,6 @@
 import express from 'express';
 import config from './config.json' assert{ type: "json" };
-import { initializeDatabase, useDatabase } from './initializeDatabase.js';
+import { initializeDatabase } from './initializeDatabase.js';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import mysql from 'mysql';
@@ -57,6 +57,7 @@ app
 		});
     })
 
+	// Add a new game to the Database
 	.get('/api/newgame/:abbrev', (req,res) => {
 		console.log(`Received ${req.params.abbrev}`);
 		UserOps.addGame(db, req.params.abbrev).then(() => {
@@ -64,6 +65,7 @@ app
 		});
 	})
 
+	// Get stats for a game
 	.get('/api/stats/:gameId/:categoryId', (req,res) => {
 		UserOps.getTotalCategoryTimeAll(db, req.params.gameId).then((data) => {
 			UserOps.getRunnersWithMoreThanRuns(db, 5).then((runners) => {
@@ -87,6 +89,7 @@ app
 		});
 	})
 
+	// Delete a game from the database
 	.get('/api/deletegame/:abbrev', (req,res) => {
 		console.log(`Received ${req.params.abbrev}`);
 		UserOps.deleteGame(db, req.params.abbrev).then(() => {
@@ -94,15 +97,11 @@ app
 		});
 	})
 
+	// Update username in the database
 	.get('/api/updateusername/:oldUsername/:newUsername', (req,res) => {
 		UserOps.updateUsername(db, req.params.oldUsername, req.params.newUsername).then(() => {
 			res.json({success: true});
 		});
 	})
-
-    // Delete Run from Table
-    .post('/api/run/delete/:id', (req,res) => {
-		UserOps.deleteGame(db, req.params.id);
-    })
 
     .listen(port, () => console.log(`Server Started on port ${port}`));

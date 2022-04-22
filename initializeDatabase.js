@@ -7,6 +7,51 @@
 import Importer from 'mysql-import';
 import { importGame } from './API Helpers/getSRDCData.js';
 
+/**
+ * Initializes the database from a MySQL Connection
+ * 
+ * @param config Configuration settings {host, user, password, database, resetDBOnLaunch}
+ */
+export function initializeDatabase(db, config) {
+
+	let promise = new Promise((resolve, reject) => {
+		try {
+			connectDb(db).then((result) => {
+				console.log(result);
+
+				resetDBOnLaunch(db, config).then((result) => {
+					console.log(result);
+
+					importSchema(db, config).then((db) => {
+						useDatabase(db, config.database).then(() => {
+
+							if (config.resetDBOnLaunch) {
+								addInitialData(db).then(() => {
+									resolve(db);
+								}).catch((err) => {
+									console.log(err);
+									resolve(db);
+								});
+							}
+							else {
+								resolve(db);
+							}
+
+						});
+					});
+				});
+			});
+		}
+		catch (e) {
+			console.log("Error: " + e);
+			reject(e);
+		}
+
+	});
+
+	return promise;
+}
+
 function connectDb(db) {
 
 	let promise = new Promise((resolve, reject) => {
@@ -62,51 +107,6 @@ function addInitialData(db) {
 	promises.push(importGame(db, 'ash'));
 
 	return Promise.all(promises);
-}
-
-/**
- * Initializes the database from a MySQL Connection
- * 
- * @param config Configuration settings {host, user, password, database, resetDBOnLaunch}
- */
-export function initializeDatabase(db, config) {
-
-	let promise = new Promise((resolve, reject) => {
-		try {
-			connectDb(db).then((result) => {
-				console.log(result);
-
-				resetDBOnLaunch(db, config).then((result) => {
-					console.log(result);
-
-					importSchema(db, config).then((db) => {
-						useDatabase(db, config.database).then(() => {
-
-							if (config.resetDBOnLaunch) {
-								addInitialData(db).then(() => {
-									resolve(db);
-								}).catch((err) => {
-									console.log(err);
-									resolve(db);
-								});
-							}
-							else {
-								resolve(db);
-							}
-
-						});
-					});
-				});
-			});
-		}
-		catch (e) {
-			console.log("Error: " + e);
-			reject(e);
-		}
-
-	});
-
-	return promise;
 }
 
 export function useDatabase(db, database) {

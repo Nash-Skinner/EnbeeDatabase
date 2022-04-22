@@ -7,10 +7,16 @@ import * as DeleteDB from './DBOperations/deleteOperations.js'
 import * as QueryDB from './DBOperations/queryOperations.js';
 import * as UpdateDB from './DBOperations/updateOperations.js'
 
+/**
+ * Add a game to the Database
+ */
 export function addGame(db, gameAbbrev) {
 	return importGame(db, gameAbbrev);
 }
 
+/**
+ * Retrieve all games, in order
+ */
 export function getAllGames(db) {
 
 	let sql = `SELECT * FROM game ORDER BY Name`;
@@ -18,6 +24,9 @@ export function getAllGames(db) {
 	return QueryDB.runQueryDb(db, sql);
 }
 
+/**
+ * Get all categories for a game
+ */
 export function getGameCategories(db, gameId) {
 	
 	let sql = `SELECT * FROM Category WHERE gameId = \'${gameId}\' ORDER BY categoryName`;
@@ -25,35 +34,9 @@ export function getGameCategories(db, gameId) {
 	return QueryDB.runQueryDb(db, sql);
 }
 
-function appendZeros(time, checkHundred = false) {
-	if(checkHundred && time < 100) {
-		time = "0" + time;
-	}
-
-	if(time < 10) {
-		time = "0" + time;
-	}
-
-	return time;
-}
-
-function convertToHMS(runTime) {
-	let time = runTime;
-
-	let hours = Math.floor(runTime / 3600);
-	time = time - hours * 3600;
-
-	let minutes = Math.floor(time / 60);
-	time = time - minutes * 60;
-
-	let seconds = Math.floor(time);
-	time = time - seconds;
-
-	let milliseconds = Math.floor(time * 1000);
-
-	return `${hours}h ${appendZeros(minutes)}m ${appendZeros(seconds)}s ${appendZeros(milliseconds)}ms`;
-}
-
+/**
+ * Get all runs for a game, category
+ */
 export function getGameCategoryRuns(db, gameId, categoryId) {
 
 	let sql = `SELECT * FROM Run WHERE gameId = \'${gameId}\' AND categoryId = \'${categoryId}\' ORDER BY Placement`;
@@ -73,6 +56,9 @@ export function getGameCategoryRuns(db, gameId, categoryId) {
 	return promise;
 }
 
+/**
+ * Get Runs and Runners for a game, category
+ */
 export function getGameCategoryRunsAndRunners(db, gameId, categoryId) {
 	
 	let sqlSelect = `SELECT Run.runId, runTime, placement, datePlayed, username, region`;
@@ -103,6 +89,23 @@ export function getGameCategoryRunsAndRunners(db, gameId, categoryId) {
 	return promise;
 }
 
+/**
+ * Update a Runner's username in the database
+ */
+ export function updateUsername(db, oldUsername, newUsername) {
+	return UpdateDB.updateWhereDb(db, 'Runner', 'username', oldUsername, newUsername);
+}
+
+/**
+ * Delete a Game (and dependent components) from the database
+ */
+export function deleteGame(db, gameAbbrev) {
+	return DeleteDB.deleteFromWhereDb(db, 'Game', 'abbrev', gameAbbrev);
+}
+
+/**
+ * STATS: get the total time for each game
+ */
 export function getTotalGameTimeAll(db) {
 
 	let sqlSelect = `SELECT name, Sum(runTime) AS totalTime`;
@@ -125,6 +128,9 @@ export function getTotalGameTimeAll(db) {
 	return promise;
 }
 
+/**
+ * STATS: Returns the numRuns runners with the most runs across all runners
+ */
 export function getRunnersWithMoreThanRuns(db, numRuns) {
 
 	let sqlSelect = `SELECT username, Count(*) AS totalRuns`;
@@ -143,6 +149,9 @@ export function getRunnersWithMoreThanRuns(db, numRuns) {
 	return promise;
 }
 
+/**
+ * STATS: Finds the slowest run across all runs
+ */
 export function getSlowestRun(db) {
 
 	
@@ -167,6 +176,9 @@ export function getSlowestRun(db) {
 	return promise;
 }
 
+/**
+ * STATS: Finds the fastest run across all runs
+ */
 export function getFastestRun(db) {
 
 	let sqlSelect = `SELECT username, runTime`;
@@ -190,6 +202,9 @@ export function getFastestRun(db) {
 	return promise;
 }
 
+/**
+ * STATS: Get the total time for each category in a game
+ */
 export function getTotalCategoryTimeAll(db, gameId) {
 
 	let sqlSelect = `SELECT categoryName, Sum(runTime) AS totalTime`;
@@ -212,6 +227,9 @@ export function getTotalCategoryTimeAll(db, gameId) {
 	return promise;
 }
 
+/**
+ * STATS: Return a percentage breakdown of the 5 most played regions for a category
+ */
 export function getRegionBreakdown(db, gameId, categoryId) {
 
 	let sqlSelect = `SELECT region, Count(*) * 100 / SUM(Count(*)) OVER() AS percentage`;
@@ -230,23 +248,35 @@ export function getRegionBreakdown(db, gameId, categoryId) {
 	return promise;
 }
 
-export function getTotalGameCategoryTime(db, gameId, categoryId) {
+//
+// Helper Functions
+//
 
-	let sql = `SELECT SUM(runTime) AS totalTime FROM Run WHERE gameId = \'${gameId}\' AND categoryId = \'${categoryId}\'`;
+function appendZeros(time, checkHundred = false) {
+	if(checkHundred && time < 100) {
+		time = "0" + time;
+	}
 
-	let promise = new Promise((resolve, reject) => {
-		QueryDB.runQueryDb(db, sql).then((result) => {
-			resolve(convertToHMS(result[0].totalTime));
-		});
-	});
+	if(time < 10) {
+		time = "0" + time;
+	}
 
-	return promise;
+	return time;
 }
 
-export function updateUsername(db, oldUsername, newUsername) {
-	return UpdateDB.updateWhereDb(db, 'Runner', 'username', oldUsername, newUsername);
-}
+function convertToHMS(runTime) {
+	let time = runTime;
 
-export function deleteGame(db, gameAbbrev) {
-	return DeleteDB.deleteFromWhereDb(db, 'Game', 'abbrev', gameAbbrev);
+	let hours = Math.floor(runTime / 3600);
+	time = time - hours * 3600;
+
+	let minutes = Math.floor(time / 60);
+	time = time - minutes * 60;
+
+	let seconds = Math.floor(time);
+	time = time - seconds;
+
+	let milliseconds = Math.floor(time * 1000);
+
+	return `${hours}h ${appendZeros(minutes)}m ${appendZeros(seconds)}s ${appendZeros(milliseconds)}ms`;
 }

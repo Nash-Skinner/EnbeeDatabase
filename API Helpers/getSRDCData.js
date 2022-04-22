@@ -1,3 +1,9 @@
+/**
+ * getSRDCData.js
+ * 
+ * Handles everything related to the SRDC API
+ */
+
 import axios from 'axios';
 import Game from '../constructors/game.js';
 import Category from '../constructors/category.js'
@@ -9,6 +15,13 @@ import RunHasVariable from '../constructors/runHasVariable.js';
 
 import * as InsertDB from '../DBOperations/insertOperations.js';
 
+/**
+ * Import a Game into the Database
+ * 
+ * @param {*} db SQL Connection
+ * @param {*} gameAbbrev SRDC Game Abbreviattion
+ * @returns 
+ */
 export function importGame(db, gameAbbrev) {
 
 	console.log(`Importing Game with Abbreviation: ${gameAbbrev}`);
